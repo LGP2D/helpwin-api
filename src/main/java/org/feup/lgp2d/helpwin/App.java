@@ -3,6 +3,8 @@ package org.feup.lgp2d.helpwin;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.feup.lgp2d.helpwin.authentication.AuthenticationFilter;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -19,7 +21,10 @@ public class App {
          * If the server needs to look for resources on any other above package, please add it to config.packages
          */
         ResourceConfig config = new ResourceConfig();
-        config.packages("org.feup.lgp2d.helpwin");
+        config.packages("org.feup.lgp2d.helpwin", "org.feup.lgp2d.helpwin.authentication");
+        config.register(LoggingFilter.class);
+
+        config.register(AuthenticationFilter.class);
 
         /**
          * Servlet instance and context holder
