@@ -19,15 +19,14 @@ import java.util.*;
 @Provider
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-    @Context
-    private ResourceInfo resourceInfo;
-
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
     private static final Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED)
             .entity("You cannot access this resource").build();
     private static final Response ACCESS_FORBIDDEN = Response.status(Response.Status.UNAUTHORIZED)
             .entity("Access blocked for all users").build();
+    @Context
+    private ResourceInfo resourceInfo;
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
@@ -99,7 +98,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private boolean isUserAllowed(String username, String password, Set<String> rolesSet) {
         boolean isAllowed = false;
         /**
-         * This is only for test purpose. We'll be needing to query the database for this, and also change the auth method to JWT
+         * This is only for test purpose.
+         * We'll be needing to query the database for this, and also change the auth method to JWT (perhaps)
          */
         if (username.equals("nuno") && password.equals("nuno")) {
             String userRole = "ADMIN";
