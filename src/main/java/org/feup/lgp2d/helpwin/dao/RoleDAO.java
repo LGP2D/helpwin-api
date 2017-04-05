@@ -8,6 +8,10 @@ import java.util.List;
 
 public class RoleDAO {
 
+    /**
+     * Gets the list of goals
+     * @return List<Role> - list of roles
+     */
     public List<Role> getRoles() {
         Session session = SessionUtil.getSession();
         Query query = session.createQuery(" from " + Role.class.getCanonicalName());

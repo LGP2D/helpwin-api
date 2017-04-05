@@ -11,10 +11,19 @@ public class SessionUtil {
     private static SessionUtil instance = new SessionUtil();
     private SessionFactory sessionFactory;
 
+    /**
+     * Get the SessionUtil singleton instance
+     * @return SessionUtil - the SessionUtil class
+     */
     public static SessionUtil getInstance(){
         return instance;
     }
 
+    /**
+     * Private constructor
+     * Reads hibernate config file in resources folder
+     * Apply settings to the session factory
+     */
     private SessionUtil(){
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
@@ -25,6 +34,10 @@ public class SessionUtil {
         sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
+    /**
+     * Returns the Session
+     * @return Session - the Session to be used in transactions
+     */
     public static Session getSession(){
         Session session =  getInstance().sessionFactory.openSession();
         return session;

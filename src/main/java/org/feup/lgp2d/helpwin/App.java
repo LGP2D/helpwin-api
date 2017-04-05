@@ -31,7 +31,6 @@ public class App {
          * Is a servlet/filter to deploy <i>root resource classes</i>
          */
         ServletHolder servlet = new ServletHolder(new ServletContainer(config));
-        //servlet.setInitOrder(0);
 
         /**
          * Main class for Jetty HTTP Servlet server

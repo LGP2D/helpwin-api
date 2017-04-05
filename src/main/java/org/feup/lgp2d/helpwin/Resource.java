@@ -1,14 +1,11 @@
 package org.feup.lgp2d.helpwin;
 
-import org.feup.lgp2d.helpwin.customExceptions.HibernateExceptionMapper;
 import org.feup.lgp2d.helpwin.dao.RoleDAO;
 import org.feup.lgp2d.helpwin.dao.UserDAO;
 import org.feup.lgp2d.helpwin.models.Role;
 import org.feup.lgp2d.helpwin.models.User;
-import org.hibernate.exception.ConstraintViolationException;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
