@@ -1,5 +1,8 @@
 package org.feup.lgp2d.helpwin.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,8 +15,9 @@ public class Role {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private int id;
-    @Column
+    @Column(unique = true)
     private String description;
 
     /**
@@ -29,10 +33,15 @@ public class Role {
     /**
      * Getters
      */
+    @JsonProperty("id")
     public int getId() {
         return id;
     }
     public String getDescription() {
         return description;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

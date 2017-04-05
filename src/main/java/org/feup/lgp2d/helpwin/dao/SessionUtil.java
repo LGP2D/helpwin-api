@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.dao;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -25,13 +26,16 @@ public class SessionUtil {
      * Apply settings to the session factory
      */
     private SessionUtil(){
-        Configuration configuration = new Configuration();
-        configuration.configure("hibernate.cfg.xml");
+        try {
+            Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
 
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties()).build();
+            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                    .applySettings(configuration.getProperties()).build();
 
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        } catch (HibernateException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
