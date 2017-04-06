@@ -4,7 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.feup.lgp2d.helpwin.authentication.AuthenticationFilter;
-import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -22,7 +22,10 @@ public class App {
          */
         ResourceConfig config = new ResourceConfig();
         config.packages("org.feup.lgp2d.helpwin", "org.feup.lgp2d.helpwin.authentication");
-        config.register(LoggingFilter.class);
+        config.register(LoggingFeature.class);
+
+
+        //Authentication filter register
         config.register(AuthenticationFilter.class);
 
         /**
@@ -35,7 +38,7 @@ public class App {
         /**
          * Main class for Jetty HTTP Servlet server
          * Aggregates connectors and requests
-         * Server itself is a hander and a ThreadPool
+         * Server itself is a handler and a ThreadPool
          */
         Server server = new Server(8080);
 

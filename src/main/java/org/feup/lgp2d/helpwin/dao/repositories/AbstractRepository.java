@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class AbstractRepository<T> {
 
@@ -135,5 +137,16 @@ public abstract class AbstractRepository<T> {
         } finally {
             session.close();
         }
+    }
+
+    /**
+     * TESTING REGION
+     */
+    public T getOne(Predicate<T> predicate) {
+        return getAll()
+                .stream()
+                .filter(predicate)
+                .findAny()
+                .get();
     }
 }
