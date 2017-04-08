@@ -1,6 +1,5 @@
 import org.eclipse.jetty.server.Server;
 import org.feup.lgp2d.helpwin.App;
-import org.feup.lgp2d.helpwin.models.Role;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

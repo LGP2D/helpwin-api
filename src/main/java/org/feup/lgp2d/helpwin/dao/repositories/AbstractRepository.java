@@ -10,7 +10,7 @@ import org.hibernate.Transaction;
 import java.util.List;
 import java.util.function.Predicate;
 
-public abstract class AbstractRepository<T> {
+public abstract class AbstractRepository<T> implements IRepository<T> {
 
     /**
      * Entity class
