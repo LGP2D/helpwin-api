@@ -41,7 +41,7 @@ public class RoleControllerTest {
     }
 
     @Test
-    public void testForHttpNotFound() {
+    public void testRootForHttpNotFound() {
        Response responseResponse = webTarget.path(RESOURCE_PATH + "/noResource").request().get();
        assertEquals(404, responseResponse.getStatus());
     }
