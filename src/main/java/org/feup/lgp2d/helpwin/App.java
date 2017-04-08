@@ -10,6 +10,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * This is the main application class
+ * Initializes all the server, servlet, context, filters, configurations.
  */
 public class App {
 
