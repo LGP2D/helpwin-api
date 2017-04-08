@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -97,6 +98,9 @@ public abstract class AbstractRepository<T> implements IRepository<T> {
             return entity;
         } catch (RuntimeException e) {
             tx.rollback();
+            if (e instanceof ConstraintViolationException) {
+                throw new RuntimeExceptionMapper(e.getCause().getMessage());
+            }
             throw new RuntimeExceptionMapper(e.getMessage());
         } finally {
             session.close();

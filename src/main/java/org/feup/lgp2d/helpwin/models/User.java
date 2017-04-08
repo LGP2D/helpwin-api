@@ -87,6 +87,11 @@ public class User {
         return imageUrl;
     }
 
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
     public String getName() {
         return name;
     }
@@ -96,13 +101,23 @@ public class User {
     public String getEmail() {
         return email;
     }
-    public String getPassword() {
-        return password;
-    }
     public String getProfession() {
         return profession;
     }
     public Role getRole() {
         return role;
+    }
+
+    /**
+     * Setters
+     */
+    @JsonProperty("uniqueId")
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
