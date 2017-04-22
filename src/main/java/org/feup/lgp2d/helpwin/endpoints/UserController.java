@@ -36,4 +36,15 @@ public class UserController {
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
     }
+
+    @DELETE
+    @PermitAll
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUserById(@PathParam("id")int id) {
+        UserRepository userRepository = new UserRepository();
+        userRepository.delete(id);
+        return Response.ok().build();
+    }
 }

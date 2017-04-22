@@ -15,7 +15,7 @@ public class Role {
      * Properties
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private int id;
     @Column(unique = true)
@@ -42,6 +42,9 @@ public class Role {
         return description;
     }
 
+    /**
+     * Setters
+     */
     public void setId(int id) {
         this.id = id;
     }
