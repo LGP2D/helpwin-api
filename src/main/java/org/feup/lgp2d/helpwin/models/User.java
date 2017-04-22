@@ -17,7 +17,7 @@ public class User {
      */
     @Id
     @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @JsonIgnore
@@ -34,6 +34,8 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonProperty(value = "password")
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false)
@@ -73,6 +75,7 @@ public class User {
     /**
      * Getters
      */
+    @JsonProperty("id")
     public int getId() {
         return id;
     }
@@ -91,7 +94,6 @@ public class User {
     public String getPassword() {
         return password;
     }
-
     public String getName() {
         return name;
     }
@@ -114,10 +116,5 @@ public class User {
     @JsonProperty("uniqueId")
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    @JsonProperty
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
