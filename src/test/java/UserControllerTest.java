@@ -63,7 +63,6 @@ public class UserControllerTest {
 
     @Test
     public void deleteUser() throws Exception {
-        //createUser();
         Response response = webTarget.path(RESOURCE_PATH + "/1").request().delete();
         assertEquals(200, response.getStatus());
     }

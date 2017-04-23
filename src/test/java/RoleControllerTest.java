@@ -63,7 +63,6 @@ public class RoleControllerTest {
 
     @Test
     public void testDeleteRoleSuccessful() {
-        //testCreateRoleSuccessful();
         Response response = webTarget.path(RESOURCE_PATH + "/5").request().delete();
         System.out.println(response.readEntity(String.class));
         assertEquals(200, response.getStatus());
