@@ -63,7 +63,9 @@ public class UserControllerTest {
 
     @Test
     public void deleteUser() throws Exception {
+        createUser();
         Response response = webTarget.path(RESOURCE_PATH + "/1").request().delete();
+        System.out.println(response.readEntity(String.class));
         assertEquals(200, response.getStatus());
     }
 
@@ -73,7 +75,6 @@ public class UserControllerTest {
                 "profession", "", new Role(3, "VOLUNTEER"));
         user.generateUniqueId();
         Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(user));
-        System.out.println(response.readEntity(String.class));
         assertEquals(401, response.getStatus());
     }
 
