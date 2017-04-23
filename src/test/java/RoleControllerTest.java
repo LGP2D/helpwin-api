@@ -48,24 +48,14 @@ public class RoleControllerTest {
 
     @Test
     public void testRootForHttpNotFound() {
-
        Response responseResponse = webTarget.path(RESOURCE_PATH + "/noResource").request().get();
        assertEquals(404, responseResponse.getStatus());
     }
 
     @Test
-    public void testCreateRoleSuccessful() {
-        Role role = new Role(0, "TEST");
-        Entity<Role> roleEntity = Entity.entity(role, MediaType.APPLICATION_JSON_TYPE);
-        Response response = webTarget.path(RESOURCE_PATH).request().post(roleEntity);
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    public void testDeleteRoleSuccessful() {
-        testCreateRoleSuccessful();
-        Response response = webTarget.path(RESOURCE_PATH + "/5").request().delete();
-        System.out.println(response.readEntity(String.class));
-        assertEquals(200, response.getStatus());
+    public void shouldThrowErrorOnDuplicate() {
+        Role role = new Role(1, "ADMIN");
+        Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(role));
+        assertEquals(401, response.getStatus());
     }
 }

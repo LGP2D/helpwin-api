@@ -93,7 +93,7 @@ public abstract class AbstractRepository<T> implements IRepository<T> {
 
         try {
             tx = session.beginTransaction();
-            session.saveOrUpdate(entity);
+            session.save(entity);
             tx.commit();
             return entity;
         } catch (RuntimeException e) {

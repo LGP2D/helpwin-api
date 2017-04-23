@@ -53,23 +53,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUser() throws Exception {
-        User user = new User(0, "test", Date.valueOf("2017-01-01"), "test@test.com", "test",
-                "profession", "", new Role(3, "VOLUNTEER"));
-        user.generateUniqueId();
-        Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(user));
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    public void deleteUser() throws Exception {
-        createUser();
-        Response response = webTarget.path(RESOURCE_PATH + "/1").request().delete();
-        System.out.println(response.readEntity(String.class));
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
     public void shouldThrowErrorOnCreateUser() {
         User user = new User(0, "test", Date.valueOf("2017-01-01"), "test@test.com", null,
                 "profession", "", new Role(3, "VOLUNTEER"));
@@ -77,5 +60,4 @@ public class UserControllerTest {
         Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(user));
         assertEquals(401, response.getStatus());
     }
-
 }
