@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 @Entity
 @XmlRootElement
@@ -14,7 +15,7 @@ public class Role {
      * Properties
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private int id;
     @Column(unique = true)
@@ -41,6 +42,9 @@ public class Role {
         return description;
     }
 
+    /**
+     * Setters
+     */
     public void setId(int id) {
         this.id = id;
     }

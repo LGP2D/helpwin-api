@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-
         <!-- Date source config -->
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/helpwin</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">1234</property>
+        <property name="hibernate.connection.driver_class">${dbdriver}</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:${dbport}/${dbname}</property>
+        <property name="hibernate.connection.username">${dbuser}</property>
+        <property name="hibernate.connection.password">${dbpass}</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
-        <property name="hibernate.show_sql">DEBUG</property>
+        <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
-        <property name="connection.pool_size">1</property>
+        <property name="hbm2ddl.auto">create</property>
 
-        <property name="hbm2ddl.auto">update</property>
+        <!--C3P0 connection settings-->
+        <property name="hibernate.c3p0.min_size">5</property>
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.timeout">300</property>
+        <property name="hibernate.c3p0.max_statements">50</property>
+        <property name="hibernate.c3p0.idle_test_period">3000</property>
+
 
         <!-- Mapping -->
-        <mapping class="org.feup.lgp2d.helpwin.models.Role"/>
-        <mapping class="org.feup.lgp2d.helpwin.models.User"/>
-        <mapping class="org.feup.lgp2d.helpwin.models.Institution"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.Role" />
+        <mapping class="org.feup.lgp2d.helpwin.models.User" />
 
     </session-factory>
 </hibernate-configuration>
