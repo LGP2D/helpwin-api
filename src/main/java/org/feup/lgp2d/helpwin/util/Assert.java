@@ -1,4 +1,4 @@
-package org.feup.lgp2d.helpwin.dao.repositories;
+package org.feup.lgp2d.helpwin.util;
 
 import org.feup.lgp2d.helpwin.customExceptions.IllegalArgumentExceptionMapper;
 
