@@ -1,4 +1,4 @@
-package org.feup.lgp2d.helpwin.dao.repositories;
+/*package org.feup.lgp2d.helpwin.dao.repositories;
 
 import org.feup.lgp2d.helpwin.customExceptions.ConstraintViolationExceptionMapper;
 import org.feup.lgp2d.helpwin.customExceptions.NoSuchElementExceptionMapper;
@@ -92,3 +92,4 @@ public class InstitutionRepositoryExample implements IRepository<Institution> {
         get(predicate).forEach(this::delete);
     }
 }
+*/
