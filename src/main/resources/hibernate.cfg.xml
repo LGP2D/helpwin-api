@@ -15,6 +15,8 @@
 
         <property name="hbm2ddl.auto">create</property>
 
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+
         <!--C3P0 connection settings-->
         <property name="hibernate.c3p0.min_size">5</property>
         <property name="hibernate.c3p0.max_size">20</property>
@@ -28,5 +30,7 @@
         <mapping class="org.feup.lgp2d.helpwin.models.User"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Institution"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Action"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.VolunteeringProposal"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.VolunteeringType"/>
     </session-factory>
 </hibernate-configuration>

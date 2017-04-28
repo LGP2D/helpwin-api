@@ -2,12 +2,17 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.InstitutionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.VolunteeringRepository;
 import org.feup.lgp2d.helpwin.models.Institution;
+import org.feup.lgp2d.helpwin.models.VolunteeringProposal;
+import org.feup.lgp2d.helpwin.models.VolunteeringType;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("institutions")

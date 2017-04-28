@@ -1,14 +1,19 @@
 package org.feup.lgp2d.helpwin.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 @Entity
 @XmlRootElement
 @Table(name = "institutions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Institution {
     /**
      * Properties
@@ -27,6 +32,7 @@ public class Institution {
     @JsonIgnore
     private String imageUrl;
 
+    private ArrayList<VolunteeringProposal> volunteeringProposals;
     /**
      * Constructors
      */
@@ -63,6 +69,11 @@ public class Institution {
         return imageUrl;
     }
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "institution", cascade = CascadeType.ALL)
+    public ArrayList<VolunteeringProposal> getVolunteeringProposals() {
+        return volunteeringProposals;
+    }
+
     /**
      * Setters
      */
@@ -76,5 +87,9 @@ public class Institution {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setVolunteeringProposals(ArrayList<VolunteeringProposal> volunteeringProposals) {
+        this.volunteeringProposals = volunteeringProposals;
     }
 }
