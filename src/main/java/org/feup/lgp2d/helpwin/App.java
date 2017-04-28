@@ -1,12 +1,17 @@
 package org.feup.lgp2d.helpwin;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.feup.lgp2d.helpwin.authentication.AuthenticationFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 /**
  * Main application class
@@ -81,6 +86,13 @@ public class App {
      */
     private static ServletContextHandler setupServletContextHandler(ServletHolder servletHolder, Server server) {
         ServletContextHandler context = new ServletContextHandler(server, "/api");
+
+        FilterHolder cors = context.addFilter(CrossOriginFilter.class,"/*", EnumSet.of(DispatcherType.REQUEST));
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+        cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD,DELETE,PUT,OPTIONS");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
+
         context.addServlet(servletHolder, "/*");
         return context;
     }
