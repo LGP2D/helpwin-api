@@ -10,4 +10,4 @@ INSERT INTO actions(description,endDate,startDate,type,valid,institution_id) val
 
 INSERT INTO helpwin.volunteeringTypes (type) VALUES ('ADULT');
 
-INSERT INTO helpwin.volunteeringProposals (coins, date, description, imageUrl, inst, volunteeringType_id) VALUES (200, '2017-12-19', 'Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...', '', 1, 1);
+INSERT INTO helpwin.volunteeringProposals (coins, date, description, imageUrl, institution_id, volunteeringType_id) VALUES (200, '2017-12-19', 'Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...Lorem ipsum dolor sit amet, tritani dolorum voluptu pro et, mel ipsum...', '', 1, 1);

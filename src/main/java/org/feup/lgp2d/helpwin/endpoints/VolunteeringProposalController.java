@@ -2,6 +2,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.VolunteeringRepository;
 import org.feup.lgp2d.helpwin.models.VolunteeringProposal;
+import org.hibernate.Hibernate;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;

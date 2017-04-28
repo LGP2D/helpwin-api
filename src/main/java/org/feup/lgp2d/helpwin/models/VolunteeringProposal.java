@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Type;
 
@@ -26,7 +27,7 @@ public class VolunteeringProposal {
     private VolunteeringType volunteeringType;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "inst")
+    @JsonBackReference
     private Institution institution;
 
     public VolunteeringProposal() {
