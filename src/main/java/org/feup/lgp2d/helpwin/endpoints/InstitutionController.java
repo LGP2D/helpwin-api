@@ -1,4 +1,4 @@
-package org.feup.lgp2d.helpwin.endPoint;
+package org.feup.lgp2d.helpwin.endpoints;
 
 
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.InstitutionRepository;
