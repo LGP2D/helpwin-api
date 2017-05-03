@@ -13,6 +13,14 @@ import java.util.List;
 @Path("user")
 public class UserController {
 
+    @OPTIONS
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response options() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*").build();
+    }
+
     @GET
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +41,9 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(User user) {
         UserRepository userRepository = new UserRepository();
+        if (user.getUniqueId() == null || user.getUniqueId().isEmpty()) {
+            user.generateUniqueId();
+        }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
     }
