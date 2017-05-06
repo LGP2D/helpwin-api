@@ -8,6 +8,4 @@ INSERT INTO institutions(description,imageUrl,name) values("SEM ABRIGOS","http:/
 
 INSERT INTO actions(description,endDate,startDate,type,valid,institution_id) values("Action A","2017-08-01","2017-08-01","tipo test",true,1);
 
-INSERT INTO helpwin.companies (email, name, password, vouchers) VALUES ('company@email.com', 'company', '123', null);
-
-INSERT INTO helpwin.vouchers (description, imageURL, company_id) VALUES ('voucher', 'path', 1);
+INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "path", "fnac");
