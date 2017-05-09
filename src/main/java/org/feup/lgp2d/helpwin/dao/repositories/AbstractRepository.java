@@ -11,7 +11,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import java.util.List;
 import java.util.function.Predicate;
 
-public abstract class AbstractRepository<T> implements IRepository<T> {
+public abstract class AbstractRepository<T> implements Repository<T> {
 
     /**
      * Entity class

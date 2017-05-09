@@ -3,7 +3,7 @@ package org.feup.lgp2d.helpwin.dao.repositories;
 import java.util.List;
 import java.util.function.Predicate;
 
-public interface IRepository<T> {
+public interface Repository<T> {
     List<T> getAll();
     T getOne(int id);
     T create(T entity);

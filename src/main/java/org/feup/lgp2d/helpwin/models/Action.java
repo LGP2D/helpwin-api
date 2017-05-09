@@ -39,7 +39,7 @@ public class Action {
     @Column(nullable=false)
     private boolean valid;
 
-    @OneToOne (cascade=CascadeType.REFRESH)
+    @OneToOne (cascade = CascadeType.REFRESH)
     private Institution institution;
 
     /**
@@ -48,7 +48,6 @@ public class Action {
 
     public Action() {
     }
-
     public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution) {
         this.id=id;
         this.type = type;
