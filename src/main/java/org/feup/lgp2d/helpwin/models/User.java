@@ -48,6 +48,7 @@ public class User {
     private Role role;
 
     @Transient
+    @JsonIgnore
     private String token;
 
     /**
@@ -111,6 +112,7 @@ public class User {
     public Role getRole() {
         return role;
     }
+    @JsonProperty("token")
     public String getToken() {
         return token;
     }
