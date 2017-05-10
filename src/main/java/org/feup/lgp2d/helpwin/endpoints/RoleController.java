@@ -4,6 +4,7 @@ import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.RoleRep
 import org.feup.lgp2d.helpwin.models.Role;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -17,7 +18,8 @@ public class RoleController {
      * @return Response - returns a response with the roles embedded in the response package
      *                    or an error if something went wrong.
      */
-    @PermitAll
+    //@PermitAll
+    @RolesAllowed("ADMIN")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoles() {
