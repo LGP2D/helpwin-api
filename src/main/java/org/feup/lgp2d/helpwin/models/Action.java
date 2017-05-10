@@ -39,6 +39,12 @@ public class Action {
     @Column(nullable=false)
     private boolean valid;
 
+    @Column(nullable=false)
+    private boolean verified;
+
+    @Column(nullable=false)
+    private int availablePosition;
+
     @OneToOne (cascade = CascadeType.REFRESH)
     private Institution institution;
 
@@ -48,7 +54,7 @@ public class Action {
 
     public Action() {
     }
-    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution) {
+    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution,boolean verified,int availablePosition) {
         this.id=id;
         this.type = type;
         this.description = description;
@@ -56,6 +62,8 @@ public class Action {
         this.endDate = endDate;
         this.valid = valid;
         this.institution = institution;
+        this.verified=verified;
+        this.availablePosition=availablePosition;
     }
 
     /**
@@ -106,5 +114,13 @@ public class Action {
 
     public Institution getInstitution() {
         return institution;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public int getAvailablePosition() {
+        return availablePosition;
     }
 }
