@@ -16,15 +16,15 @@ public class TokenHelper {
      * Generate a new token
      * @param expires Date
      */
-    public static String getJWTString(Date expires, String name) {
-        if (expires == null || name == null) {
+    public static String getJWTString(Date expires, String email) {
+        if (expires == null || email == null) {
             throw new InvalidUserDataException("Illegal token");
         }
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         return Jwts.builder()
                 .setIssuer("Helpwin-Security")
-                .setSubject(name)
+                .setSubject(email)
                 .setExpiration(expires)
                 .setIssuedAt(new Date())
                 .signWith(signatureAlgorithm, secret)
