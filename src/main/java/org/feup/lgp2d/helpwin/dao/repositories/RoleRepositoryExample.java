@@ -13,7 +13,7 @@
 //import java.util.function.Predicate;
 //import java.util.stream.Collectors;
 //
-//public class RoleRepositoryExample implements IRepository<Role> {
+//public class RoleRepositoryExample implements Repository<Role> {
 //
 //    public RoleRepositoryExample() {
 //    }

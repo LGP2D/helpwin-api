@@ -1,6 +1,12 @@
 package org.feup.lgp2d.helpwin.authentication;
 
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
+import org.feup.lgp2d.helpwin.customExceptions.InvalidUserDataException;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.models.Role;
+import org.feup.lgp2d.helpwin.models.User;
 import org.glassfish.jersey.internal.util.Base64;
+import org.glassfish.jersey.server.ContainerRequest;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -62,32 +68,38 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 return;
             }
             /**
-             * Get encoded username and password and decode it
+             * Get encoded token and decode it
              */
-            final String encodedUserPassword = authorization.get(0).replaceFirst(AUTHENTICATION_SCHEME + " ", "");
-            String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));
-
-            /**
-             * Split username and password tokens
-             */
-            final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
-            final String username = tokenizer.nextToken();
-            final String password = tokenizer.nextToken();
+            String authorizationHeader = authorization.get(0);
+            String token = extractJwtTokenFromAuthorizationHeader(authorizationHeader);
+            // Check if token is valid
+            if (!TokenHelper.isValid(token)) {
+                throw new InvalidUserDataException("Invalid token");
+            }
+            // Check if token issuer is valid
+            /*if (Objects.equals(TokenHelper.getIssuer(token), "Helpwin-Security")) {
+                throw new InvalidUserDataException("Invalid token issuer");
+            }*/
 
             /**
              * Case the request's target method has Roles annotation
              */
             if (method.isAnnotationPresent(RolesAllowed.class)) {
                 /**
-                 * Get the request's target method annotation Roles
+                 * Extract target method annotation Roles
                  */
                 RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
                 Set<String> rolesSet = new HashSet<>(Arrays.asList(rolesAnnotation.value()));
 
                 /**
+                 * Extract email from token
+                 */
+                String email = TokenHelper.getEmail(token);
+
+                /**
                  * Case user is not valid
                  */
-                if (!isUserAllowed(username, password, rolesSet)) {
+                if (!isUserAllowed(email, rolesSet)) {
                     containerRequestContext.abortWith(ACCESS_DENIED);
                     return;
                 }
@@ -95,22 +107,22 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         }
     }
 
-    private boolean isUserAllowed(String username, String password, Set<String> rolesSet) {
+    private boolean isUserAllowed(String email, Set<String> rolesSet) {
         boolean isAllowed = false;
-        /**
-         * This is only for test purpose.
-         * We'll be needing to query the database for this, and also change the auth method to JWT (perhaps)
-         */
-        if (username.equals("nuno") && password.equals("nuno")) {
-            String userRole = "ADMIN";
 
-            /**
-             * Verify user role
-             */
-            if (rolesSet.contains(userRole)) {
-                isAllowed = true;
-            }
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+
+        if (rolesSet.contains(user.getRole().getDescription())){
+            isAllowed = true;
         }
+
         return isAllowed;
+    }
+
+    private static String extractJwtTokenFromAuthorizationHeader(String auth) {
+        //Replacing "Bearer Token" to "Token" directly
+        return auth.replaceFirst("[B|b][E|e][A|a][R|r][E|e][R|r] ", "")
+                .replace(" ", "");
     }
 }

@@ -40,7 +40,7 @@ public class RoleControllerTest {
         httpServer.destroy();
     }
 
-    @Test
+    /*@Test
     public void testRootForHttpOkCode() {
         Response responseMessage = webTarget.path(RESOURCE_PATH).request().get();
         assertEquals(200, responseMessage.getStatus());
@@ -57,5 +57,5 @@ public class RoleControllerTest {
         Role role = new Role(1, "ADMIN");
         Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(role));
         assertEquals(401, response.getStatus());
-    }
+    }*/
 }

@@ -47,6 +47,10 @@ public class User {
     @OneToOne(cascade = CascadeType.REFRESH)
     private Role role;
 
+    @Transient
+    @JsonIgnore
+    private String token;
+
     /**
      * Constructors
      */
@@ -108,6 +112,10 @@ public class User {
     public Role getRole() {
         return role;
     }
+    @JsonProperty("token")
+    public String getToken() {
+        return token;
+    }
 
     /**
      * Setters
@@ -115,5 +123,11 @@ public class User {
     @JsonProperty("uniqueId")
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
 }

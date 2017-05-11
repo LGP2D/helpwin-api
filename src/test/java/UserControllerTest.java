@@ -40,7 +40,7 @@ public class UserControllerTest {
         httpServer.destroy();
     }
 
-    @Test
+    /*@Test
     public void testRootForHttpOkCode() {
         Response responseMessage = webTarget.path(RESOURCE_PATH).request().get();
         assertEquals(200, responseMessage.getStatus());
@@ -59,5 +59,5 @@ public class UserControllerTest {
         user.generateUniqueId();
         Response response = webTarget.path(RESOURCE_PATH).request().post(Entity.json(user));
         assertEquals(401, response.getStatus());
-    }
+    }*/
 }
