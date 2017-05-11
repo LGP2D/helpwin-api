@@ -26,6 +26,7 @@
         <!-- Mapping -->
         <mapping class="org.feup.lgp2d.helpwin.models.Role"/>
         <mapping class="org.feup.lgp2d.helpwin.models.User"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.Voucher"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Institution"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Action"/>
     </session-factory>
