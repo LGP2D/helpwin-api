@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.DynamicInsert;
+
 import java.sql.Date;
 import java.util.UUID;
 
@@ -43,10 +45,10 @@ public class Voucher {
     private Date endDate;
 
     @Column
-    private int quantity;
+    private Integer quantity;
 
     @Column
-    private int credits;
+    private Integer credits;
 
     /* Porque Instituion estão no Voucher?
     @ManyToOne(cascade = CascadeType.ALL)
@@ -61,7 +63,7 @@ public class Voucher {
     }
 
     public Voucher(int id, String uniqueId, String type, String description, Date startDate,
-                   Date endDate, int quantity, int credits /* , Institution institution */) {
+                   Date endDate, Integer quantity, Integer credits /* , Institution institution */) {
         this.id = id;
         this.uniqueId = uniqueId;
         this.type = type;
@@ -102,11 +104,11 @@ public class Voucher {
         return endDate;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public int getCredits() {
+    public Integer getCredits() {
         return credits;
     }
 
@@ -126,7 +128,4 @@ public class Voucher {
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
-
-
-
 }
