@@ -91,4 +91,25 @@ public class UserController {
                 .header("Access-Control-Allow-Origin", "*").build();
     }
 
+    /**
+     * Edit user's profile
+     *
+     * @param user - (User) the model of the user
+     * @return Response - the response with the edited user embedded
+     */
+    @PUT
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editUser(User user) {
+        if(user.getId() > 0 ){
+            UserRepository userRepository = new UserRepository();
+            User userToRetrieve = userRepository.create(user);
+            return Response.ok(userToRetrieve).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        }
+
+    }
+
 }
