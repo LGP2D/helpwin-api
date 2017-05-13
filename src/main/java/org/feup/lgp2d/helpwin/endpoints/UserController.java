@@ -107,13 +107,39 @@ public class UserController {
     public Response editUser(User user) {
         try{
             UserRepository repo = new UserRepository();
-            User userByUniqueId = repo.getUserByUniqueID(user.getUniqueId());
-            user.setID(userByUniqueId.getId());
+            User dbUser = repo.getUserByUniqueID(user.getUniqueId());
+
+            user.setID(dbUser.getId());
+            user.setRole(dbUser.getRole());
+
+            if(dbUser.getToken() != null){
+                user.setToken(dbUser.getToken());
+            }
+            if(dbUser.getImageUrl() != null){
+                user.setImageUrl(dbUser.getImageUrl());
+            }
+
+            if(user.getEmail() == null){
+                user.setEmail(dbUser.getEmail());
+            }
+            if(user.getName() == null){
+                user.setName(dbUser.getName());
+            }
+            if(user.getBirthDate() == null){
+                user.setBirthDate(dbUser.getBirthDate());
+            }
+            if(user.getPassword() == null){
+                user.setPassword(dbUser.getPassword());
+            }
+            if(user.getProfession() == null){
+                user.setProfession(dbUser.getProfession());
+            }
+
             repo.updateUser(user);
             User newUser = repo.getUserByUniqueID(user.getUniqueId());
             return Response.serverError().entity(newUser).build();
         } catch(NullPointerException e){
-            return Response.serverError().entity("User is null.").build();
+            return Response.serverError().entity("Internal error.").build();
         }
     }
 

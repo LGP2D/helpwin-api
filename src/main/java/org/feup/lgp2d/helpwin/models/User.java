@@ -117,6 +117,7 @@ public class User {
         return token;
     }
 
+
     /**
      * Setters
      */
@@ -131,4 +132,22 @@ public class User {
         this.token = token;
     }
     public void setID(int ID){this.id = ID;}
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
