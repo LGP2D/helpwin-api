@@ -78,7 +78,7 @@ public class User {
     /**
      * Getters
      */
-    @JsonProperty("id")
+    @JsonIgnore
     public int getId() {
         return id;
     }
