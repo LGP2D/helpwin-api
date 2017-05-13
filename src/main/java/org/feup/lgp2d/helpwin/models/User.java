@@ -130,4 +130,7 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

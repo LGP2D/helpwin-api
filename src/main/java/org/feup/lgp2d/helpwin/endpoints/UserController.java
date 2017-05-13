@@ -48,6 +48,9 @@ public class UserController {
         if (user.getUniqueId() == null || user.getUniqueId().isEmpty()) {
             user.generateUniqueId();
         }
+        if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
+            user.setImageUrl("http://i.imgur.com/ZXfLG6S.png");
+        }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
     }
