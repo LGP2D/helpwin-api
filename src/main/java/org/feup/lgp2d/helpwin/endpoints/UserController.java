@@ -116,6 +116,15 @@ public class UserController {
 
     @OPTIONS
     @PermitAll
+    @Path("/loginToken")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response options3() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @OPTIONS
+    @PermitAll
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response options2() {
