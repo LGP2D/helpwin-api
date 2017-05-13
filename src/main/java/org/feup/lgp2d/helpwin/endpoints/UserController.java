@@ -121,7 +121,7 @@ public class UserController {
     public Response options3() {
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*")
-                .header("Authorization", "*")
+                .header("Access-Control-Allow-Headers", "*")
                 .build();
     }
 
