@@ -4,9 +4,11 @@ package org.feup.lgp2d.helpwin.endpoints;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.User;
+import org.jboss.logging.annotations.Param;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -99,17 +101,20 @@ public class UserController {
      */
     @PUT
     @PermitAll
+    @Path("/editProfile")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editUser(User user) {
-        if(user.getId() > 0 ){
-            UserRepository userRepository = new UserRepository();
-            User userToRetrieve = userRepository.create(user);
-            return Response.ok(userToRetrieve).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        try{
+            UserRepository repo = new UserRepository();
+            User userByUniqueId = repo.getUserByUniqueID(user.getUniqueId());
+            user.setID(userByUniqueId.getId());
+            repo.updateUser(user);
+            User newUser = repo.getUserByUniqueID(user.getUniqueId());
+            return Response.serverError().entity(newUser).build();
+        } catch(NullPointerException e){
+            return Response.serverError().entity("User is null.").build();
         }
-
     }
 
 }

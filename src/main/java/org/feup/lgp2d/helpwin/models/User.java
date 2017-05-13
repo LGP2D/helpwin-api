@@ -130,4 +130,5 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+    public void setID(int ID){this.id = ID;}
 }
