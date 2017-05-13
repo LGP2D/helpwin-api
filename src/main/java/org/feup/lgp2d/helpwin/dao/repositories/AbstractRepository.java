@@ -2,6 +2,7 @@ package org.feup.lgp2d.helpwin.dao.repositories;
 
 import org.feup.lgp2d.helpwin.customExceptions.RuntimeExceptionMapper;
 import org.feup.lgp2d.helpwin.dao.SessionUtil;
+import org.feup.lgp2d.helpwin.util.Assert;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

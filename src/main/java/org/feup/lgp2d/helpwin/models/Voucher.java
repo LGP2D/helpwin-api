@@ -1,10 +1,11 @@
 package org.feup.lgp2d.helpwin.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.DynamicInsert;
+
 import java.sql.Date;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 @XmlRootElement
 @Table(name = "vouchers")
 public class Voucher {
+
     /**
      * Properties
      */
@@ -24,36 +26,44 @@ public class Voucher {
     @Column(unique = true)
     private String uniqueId;
 
-    @Column(nullable = false)
+    @Column
     private String type;
 
     @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
+    private String imagePath;
+
+    @Column(nullable = false)
+    private String company;
+
+    @Column
     private Date startDate;
 
-    @Column(nullable = false)
+    @Column
     private Date endDate;
 
-    @Column(nullable = false)
-    private int quantity;
+    @Column
+    private Integer quantity;
 
-    @Column(nullable = false)
-    private int credits;
+    @Column
+    private Integer credits;
 
+    /* Porque Instituion estão no Voucher?
     @ManyToOne(cascade = CascadeType.ALL)
     private Institution institution;
+    */
+    public Voucher() {}
 
-    /**
-     *
-     */
-
-    public Voucher() {
-
+    public Voucher(String description, String imagePath, String company) {
+        this.description = description;
+        this.imagePath = imagePath;
+        this.company = company;
     }
 
-    public Voucher(int id, String uniqueId, String type, String description, Date startDate, Date endDate, int quantity, int credits, Institution institution) {
+    public Voucher(int id, String uniqueId, String type, String description, Date startDate,
+                   Date endDate, Integer quantity, Integer credits /* , Institution institution */) {
         this.id = id;
         this.uniqueId = uniqueId;
         this.type = type;
@@ -62,17 +72,7 @@ public class Voucher {
         this.endDate = endDate;
         this.quantity = quantity;
         this.credits = credits;
-        this.institution = institution;
-    }
-
-    /**
-     *  Utils
-     */
-
-    public void generateUniqueId(){this.uniqueId= UUID.randomUUID().toString();}
-    @JsonProperty("uniqueId")
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+        //this.institution = institution;
     }
 
     /**
@@ -104,16 +104,28 @@ public class Voucher {
         return endDate;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public int getCredits() {
+    public Integer getCredits() {
         return credits;
     }
 
-    public Institution getInstitution() {
+    /* public Institution getInstitution() {
         return institution;
-    }
+    } */
 
+    public String getImagePath() { return imagePath; }
+
+    public String getCompany() { return company; }
+
+    /**
+     *  Utils
+     */
+    public void generateUniqueId(){this.uniqueId= UUID.randomUUID().toString();}
+    @JsonProperty("uniqueId")
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 }
