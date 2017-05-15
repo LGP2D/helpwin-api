@@ -135,12 +135,23 @@ public class UserController {
                 user.setProfession(dbUser.getProfession());
             }
 
+            //TODO: Verify email using token
+
             repo.updateUser(user);
             User newUser = repo.getUserByUniqueID(user.getUniqueId());
-            return Response.serverError().entity(newUser).build();
+            return Response.ok(newUser).build();
         } catch(NullPointerException e){
             return Response.serverError().entity("Internal error.").build();
         }
+    }
+
+    @OPTIONS
+    @PermitAll
+    @Path("/editProfile")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response options4() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*").build();
     }
 
 }
