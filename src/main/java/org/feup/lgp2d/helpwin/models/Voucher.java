@@ -46,7 +46,6 @@ public class Voucher {
     @Column
     private Integer credits;
 
-
     public Voucher() {}
 
     public Voucher(String description, String imagePath) {

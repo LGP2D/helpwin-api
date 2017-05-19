@@ -4,11 +4,13 @@ import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.Company
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.VoucherRepository;
 import org.feup.lgp2d.helpwin.models.Company;
 import org.feup.lgp2d.helpwin.models.Voucher;
+import org.jboss.logging.annotations.Param;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Iterator;
 import java.util.List;
 
 @Path("company")
@@ -47,24 +49,30 @@ public class CompanyController {
     @Path("/insertVoucher")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertVoucher(Voucher voucher, Company company) {
+    public Response insertVoucher(Company company) {
+        try{
+            CompanyRepository companyRepository = new CompanyRepository();
 
-        if (voucher == null) {
-            return Response.serverError().entity("Voucher is null.").build();
+            Company companyToRetrieve = companyRepository.getUserByUniqueID(company.getUniqueId());
+
+            if (companyToRetrieve == null) {
+                return Response.serverError().entity("Company not found.").build();
+            }
+
+            Iterator iter = company.getVouchers().iterator();
+
+            Voucher voucher = (Voucher) iter.next();
+
+            if(!companyToRetrieve.addVoucher(voucher)){
+                return Response.serverError().entity("Error storing the voucher's data.").build();
+            }
+
+            companyRepository.updateCompany(companyToRetrieve);
+
+            return Response.ok().entity(companyToRetrieve).build();
+
+        } catch (Exception e) {
+            return Response.serverError().entity("Internal error.").build();
         }
-        CompanyRepository companyRepository = new CompanyRepository();
-
-        Company companyToRetrieve = companyRepository.getUserByUniqueID(company.getUniqueId());
-
-        if (companyToRetrieve == null) {
-            return Response.serverError().entity("Company not found.").build();
-        }
-
-        if(companyToRetrieve.addVoucher(voucher)){
-            return Response.serverError().entity("Error storing the voucher's data.").build();
-        }
-
-        companyRepository.
-
     }
 }

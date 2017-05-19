@@ -23,7 +23,8 @@ public class Company {
     @Column
     private String imagePath;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="id")
     Set<Voucher> vouchers;
 
     @Column(unique = true)

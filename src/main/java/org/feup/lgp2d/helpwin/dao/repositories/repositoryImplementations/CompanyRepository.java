@@ -7,6 +7,7 @@ import org.feup.lgp2d.helpwin.models.User;
 import org.feup.lgp2d.helpwin.models.Voucher;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 public class CompanyRepository extends AbstractRepository<Company> {
@@ -22,5 +23,14 @@ public class CompanyRepository extends AbstractRepository<Company> {
                 .uniqueResult();
         session.close();
         return company;
+    }
+
+    public void updateCompany(Company company){
+        Session session = SessionUtil.getSession();
+        Transaction tx = null;
+        tx = session.beginTransaction();
+        session.update(company);
+        tx.commit();
+        session.close();
     }
 }
