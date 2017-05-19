@@ -13,7 +13,7 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
 
         <!--C3P0 connection settings-->
         <property name="hibernate.c3p0.min_size">5</property>
@@ -30,5 +30,7 @@
         <mapping class="org.feup.lgp2d.helpwin.models.Institution"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Action"/>
         <mapping class="org.feup.lgp2d.helpwin.models.Voucher"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.Company"/>
+
     </session-factory>
 </hibernate-configuration>
