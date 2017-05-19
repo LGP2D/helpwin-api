@@ -7,6 +7,7 @@ import org.feup.lgp2d.helpwin.models.Voucher;
 import org.jboss.logging.annotations.Param;
 
 import javax.annotation.security.PermitAll;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

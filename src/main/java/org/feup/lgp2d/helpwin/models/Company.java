@@ -1,9 +1,14 @@
 package org.feup.lgp2d.helpwin.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.feup.lgp2d.helpwin.dao.SessionUtil;
+import org.hibernate.Hibernate;
+import org.hibernate.criterion.Order;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +28,7 @@ public class Company {
     @Column
     private String imagePath;
 
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinColumn(name="id")
     Set<Voucher> vouchers;
 
@@ -69,5 +74,9 @@ public class Company {
         if (vouchers.add(voucher)) {
             return true;
         } else return false;
+    }
+
+    public void setVouchers(Set<Voucher> vouchers) {
+        this.vouchers = vouchers;
     }
 }
