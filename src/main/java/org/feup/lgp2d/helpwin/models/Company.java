@@ -3,7 +3,9 @@ package org.feup.lgp2d.helpwin.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @XmlRootElement
@@ -24,6 +26,9 @@ public class Company {
     @OneToMany
     Set<Voucher> vouchers;
 
+    @Column(unique = true)
+    private String uniqueId;
+
     public Company() {
     }
 
@@ -43,5 +48,25 @@ public class Company {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public Set<Voucher> getVouchers() {
+        return vouchers;
+    }
+
+    public void generateUniqueId(){this.uniqueId= UUID.randomUUID().toString();}
+
+    public boolean addVoucher(Voucher voucher) {
+        if(vouchers == null){
+            vouchers = new HashSet<>(0);
+        }
+
+        if (vouchers.add(voucher)) {
+            return true;
+        } else return false;
     }
 }
