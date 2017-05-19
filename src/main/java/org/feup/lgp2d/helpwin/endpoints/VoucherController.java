@@ -50,41 +50,16 @@ public class VoucherController {
 
     @PermitAll
     @POST
-    @Path("vouchers")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createVoucher(Voucher voucher) {
         VoucherRepository voucherRepository = new VoucherRepository();
+        voucher.generateUniqueId();
         Voucher voucherToRetrieve = voucherRepository.create(voucher);
         if (voucherToRetrieve != null) {
             return Response.ok().entity(voucherToRetrieve).build();
         } else {
             return Response.serverError().entity("Something happened trying to save your record on database").build();
         }
-    }
-
-    @PermitAll
-    @PUT
-    @Path("vouchers")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateVoucher(Voucher voucher) {
-        VoucherRepository voucherRepository = new VoucherRepository();
-        Voucher voucherToRetrieve = voucherRepository.create(voucher);
-        if (voucherToRetrieve != null) {
-            return Response.ok().entity(voucherToRetrieve).build();
-        } else {
-            return Response.serverError().entity("Something happened trying to update your record on database").build();
-        }
-    }
-
-    @PermitAll
-    @DELETE
-    @Path("vouchers/{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteVoucherById(@PathParam("id")int id) {
-        VoucherRepository voucherRepository = new VoucherRepository();
-        voucherRepository.delete(id);
-        return Response.ok("Action deleted.").build();
     }
 }

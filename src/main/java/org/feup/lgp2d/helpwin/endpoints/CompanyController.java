@@ -40,4 +40,29 @@ public class CompanyController {
             return Response.serverError().entity("Something happened trying to save your record on database").build();
         }
     }
+
+    @PermitAll
+    @PUT
+    @Path("/insertVoucher")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertVoucher(Voucher voucher, Company company) {
+        //Find company
+
+
+        if (companyToRetrieve != null) {
+            return Response.ok().entity(companyToRetrieve).build();
+        } else {
+            return Response.serverError().entity("Company not found.").build();
+        }
+
+        //Insert voucher
+
+
+        if (voucherToRetrieve != null) {
+            return Response.ok().entity(voucherToRetrieve).build();
+        } else {
+            return Response.serverError().entity("Error storing the voucher's data.").build();
+        }
+    }
 }

@@ -22,7 +22,6 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @JsonIgnore
     @Column(unique = true)
     private String uniqueId;
 
@@ -34,9 +33,6 @@ public class Voucher {
 
     @Column(nullable = false)
     private String imagePath;
-
-    @Column(nullable = false)
-    private String company;
 
     @Column
     private Date startDate;
@@ -50,20 +46,16 @@ public class Voucher {
     @Column
     private Integer credits;
 
-    /* Porque Instituion estão no Voucher?
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Institution institution;
-    */
+
     public Voucher() {}
 
-    public Voucher(String description, String imagePath, String company) {
+    public Voucher(String description, String imagePath) {
         this.description = description;
         this.imagePath = imagePath;
-        this.company = company;
     }
 
     public Voucher(int id, String uniqueId, String type, String description, Date startDate,
-                   Date endDate, Integer quantity, Integer credits /* , Institution institution */) {
+                   Date endDate, Integer quantity, Integer credits) {
         this.id = id;
         this.uniqueId = uniqueId;
         this.type = type;
@@ -72,7 +64,6 @@ public class Voucher {
         this.endDate = endDate;
         this.quantity = quantity;
         this.credits = credits;
-        //this.institution = institution;
     }
 
     /**
@@ -83,7 +74,6 @@ public class Voucher {
         return id;
     }
 
-    @JsonProperty("uniqueid")
     public String getUniqueId() {
         return uniqueId;
     }
@@ -112,13 +102,7 @@ public class Voucher {
         return credits;
     }
 
-    /* public Institution getInstitution() {
-        return institution;
-    } */
-
     public String getImagePath() { return imagePath; }
-
-    public String getCompany() { return company; }
 
     /**
      *  Utils
