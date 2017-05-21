@@ -89,6 +89,8 @@ public class UserController {
         calendar.add(Calendar.HOUR, 24);
         userToRetrieve.setToken(TokenHelper.getJWTString(calendar.getTime(), userToRetrieve.getEmail()));
 
+        if (userToRetrieve.getUserActions() != null) { userToRetrieve.setUserActions(null); }
+
         return Response.ok(userToRetrieve).build();
     }
 
