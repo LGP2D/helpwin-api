@@ -121,6 +121,8 @@ public class UserController {
             userToRetrieve.setPassword(null);
         }
 
+        if (userToRetrieve.getUserActions() != null) { userToRetrieve.setUserActions(null); }
+
         return Response.ok(userToRetrieve).build();
     }
 
