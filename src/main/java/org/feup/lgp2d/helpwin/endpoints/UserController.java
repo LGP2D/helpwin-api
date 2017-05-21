@@ -1,14 +1,21 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.models.Image;
+import org.feup.lgp2d.helpwin.models.RootImage;
 import org.feup.lgp2d.helpwin.models.User;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,7 +55,7 @@ public class UserController {
             user.generateUniqueId();
         }
         if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
-            user.setImageUrl("http://i.imgur.com/ZXfLG6S.png");
+            user.setImageUrl("http://i.imgur.com/Qo3dP6Z.png");
         }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
@@ -132,6 +139,32 @@ public class UserController {
     public Response options2() {
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @OPTIONS
+    @PermitAll
+    @Path("/image")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response options4() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @POST
+    @PermitAll
+    @Path("/image")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadImage(RootImage file) {
+
+        String base64 = file.file.data_uri.split(",")[1];
+        byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
+        java.nio.file.Path path = Paths.get("./images/", file.file.filename);
+        try {
+            String pathToReturn = Files.write(path, decodedImage).toString();
+            return Response.ok(pathToReturn.substring(1)).build();
+        } catch (IOException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
 }
