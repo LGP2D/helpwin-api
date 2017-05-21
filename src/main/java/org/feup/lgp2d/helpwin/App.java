@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.feup.lgp2d.helpwin.authentication.AuthenticationFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -70,6 +71,7 @@ public class App {
         ResourceConfig config = new ResourceConfig();
         config.packages("org.feup.lgp2d.helpwin", "org.feup.lgp2d.helpwin.authentication");
         config.register(LoggingFeature.class);
+        config.register(MultiPartFeature.class);
 
         //Authentication filter register
         config.register(AuthenticationFilter.class);
