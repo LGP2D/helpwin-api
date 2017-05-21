@@ -78,7 +78,7 @@ public class User {
     /**
      * Getters
      */
-    @JsonProperty("id")
+    @JsonIgnore
     public int getId() {
         return id;
     }
@@ -116,7 +116,6 @@ public class User {
     public String getToken() {
         return token;
     }
-
 
     /**
      * Setters

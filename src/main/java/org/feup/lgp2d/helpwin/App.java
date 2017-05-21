@@ -1,6 +1,11 @@
 package org.feup.lgp2d.helpwin;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -11,6 +16,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import java.util.EnumSet;
 
 /**
@@ -31,7 +37,8 @@ public class App {
 
         server = new Server(port);
 
-        setupServletContextHandler(servletHolder, server) ;
+        setupServletContextHandler(servletHolder, server);
+
         return server;
     }
 
@@ -85,15 +92,29 @@ public class App {
      * Method <code>addServlet()</code> is a convenience method to add a Servlet
      */
     private static ServletContextHandler setupServletContextHandler(ServletHolder servletHolder, Server server) {
-        ServletContextHandler context = new ServletContextHandler(server, "/api");
 
-        FilterHolder cors = context.addFilter(CrossOriginFilter.class,"/*", EnumSet.of(DispatcherType.REQUEST));
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        server.setHandler(context);
+
+        context.addServlet(servletHolder, "/api/*");
+
+        ServletHolder staticImages = new ServletHolder("static-images", DefaultServlet.class);
+        staticImages.setInitParameter("resourceBase", "./images");
+        staticImages.setInitParameter("dirAllowed", "true");
+        staticImages.setInitParameter("pathInfoOnly", "true");
+        context.addServlet(staticImages, "/static/images/*");
+
+        ServletHolder root = new ServletHolder("default", DefaultServlet.class);
+        root.setInitParameter("dirAllowed", "true");
+        context.addServlet(root, "/");
+
+        FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/api/*", EnumSet.of(DispatcherType.REQUEST));
         cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
         cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD,DELETE,PUT,OPTIONS");
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,DELETE,PUT,OPTIONS");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type, Origin, Authorization");
 
-        context.addServlet(servletHolder, "/*");
         return context;
     }
 

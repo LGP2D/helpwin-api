@@ -1,6 +1,5 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
-
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.User;
@@ -50,6 +49,9 @@ public class UserController {
         if (user.getUniqueId() == null || user.getUniqueId().isEmpty()) {
             user.generateUniqueId();
         }
+        if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
+            user.setImageUrl("http://i.imgur.com/ZXfLG6S.png");
+        }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
     }
@@ -82,6 +84,47 @@ public class UserController {
         userToRetrieve.setToken(TokenHelper.getJWTString(calendar.getTime(), userToRetrieve.getEmail()));
 
         return Response.ok(userToRetrieve).build();
+    }
+
+    @POST
+    @PermitAll
+    @Path("/loginToken")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response authenticateUserWithToken(@HeaderParam("Authorization")String token) {
+        if (!TokenHelper.isValid(token)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build();
+        }
+
+        String email = TokenHelper.getEmail(token);
+
+        if (email == null || email.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).entity("Email not found in token").build();
+        }
+
+        UserRepository userRepository = new UserRepository();
+        User userToRetrieve = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+
+        if (userToRetrieve == null) {
+            return Response.status(Response.Status.NO_CONTENT).entity("User with token not found").build();
+        }
+
+        if (userToRetrieve.getPassword() != null || !userToRetrieve.getPassword().isEmpty()) {
+            userToRetrieve.setPassword(null);
+        }
+
+        return Response.ok(userToRetrieve).build();
+    }
+
+    @OPTIONS
+    @PermitAll
+    @Path("/loginToken")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response options3() {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Authorization")
+                .build();
     }
 
     @OPTIONS
