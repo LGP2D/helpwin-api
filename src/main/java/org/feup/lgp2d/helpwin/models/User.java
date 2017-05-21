@@ -21,7 +21,7 @@ public class User {
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private int id;
+    private Integer id;
 
     @JsonIgnore
     @Column(unique = true, nullable = false)
@@ -91,7 +91,7 @@ public class User {
      * Getters
      */
     @JsonIgnore
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

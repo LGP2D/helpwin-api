@@ -21,7 +21,7 @@ public class Action {
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "action_id")
-    private int id;
+    private Integer id;
 
     @JsonIgnore
     @Column(unique=true)
@@ -93,7 +93,7 @@ public class Action {
      * Getters
      */
     @JsonProperty("id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
