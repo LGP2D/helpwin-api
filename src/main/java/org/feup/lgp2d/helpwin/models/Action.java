@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,38 +20,43 @@ public class Action {
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Column(name = "action_id")
+    private Integer id;
 
     @JsonIgnore
-    @Column(unique = true)
+    @Column(unique=true)
     private String uniqueId;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private String type;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private Date startDate;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private Date endDate;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private boolean valid;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private boolean verified;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private int availablePosition;
 
-    @OneToOne(cascade = CascadeType.REFRESH)
-    private User user;
-
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne (cascade = CascadeType.REFRESH)
     private Institution institution;
+
+    /*@ManyToMany(fetch = FetchType.LAZY, mappedBy = "userActions")
+    private List<User> users = new ArrayList<>();*/
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.action")
+    private List<UserAction> userActions = new ArrayList<>();
+
 
     /**
      * Constructors
@@ -57,38 +64,36 @@ public class Action {
 
     public Action() {
     }
-
-    public Action(int id, String type, String description, Date startDate, Date endDate, boolean valid, Institution institution, boolean verified, int availablePosition, User user) {
-        this.id = id;
+    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution,boolean verified,int availablePosition) {
+        this.id=id;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.valid = valid;
         this.institution = institution;
-        this.verified = verified;
-        this.availablePosition = availablePosition;
-        this.user = user;
+        this.verified=verified;
+        this.availablePosition=availablePosition;
     }
 
     /**
      * Utils
      */
 
-    public void generateUniqueId() {
+    public  void generateUniqueId(){
         this.uniqueId = UUID.randomUUID().toString();
     }
 
     @JsonProperty("uniqueId")
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setUniqueId(String uniqueId){
+        this.uniqueId=uniqueId;
     }
 
     /**
      * Getters
      */
     @JsonProperty("id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -129,5 +134,7 @@ public class Action {
         return availablePosition;
     }
 
-    public User getUser() {return user;}
+    public List<UserAction> getUserActions() {
+        return userActions;
+    }
 }
