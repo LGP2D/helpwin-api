@@ -2,26 +2,23 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.models.RootImage;
 import org.feup.lgp2d.helpwin.models.User;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
 @Path("user")
 public class UserController {
-
-    @OPTIONS
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response options() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
 
     @GET
     @PermitAll
@@ -48,7 +45,7 @@ public class UserController {
             user.generateUniqueId();
         }
         if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
-            user.setImageUrl("http://i.imgur.com/ZXfLG6S.png");
+            user.setImageUrl("http://i.imgur.com/Qo3dP6Z.png");
         }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
@@ -81,6 +78,8 @@ public class UserController {
         calendar.add(Calendar.HOUR, 24);
         userToRetrieve.setToken(TokenHelper.getJWTString(calendar.getTime(), userToRetrieve.getEmail()));
 
+        if (userToRetrieve.getUserActions() != null) { userToRetrieve.setUserActions(null); }
+
         return Response.ok(userToRetrieve).build();
     }
 
@@ -111,27 +110,77 @@ public class UserController {
             userToRetrieve.setPassword(null);
         }
 
+        if (userToRetrieve.getUserActions() != null) { userToRetrieve.setUserActions(null); }
+
         return Response.ok(userToRetrieve).build();
     }
 
-    @OPTIONS
+    @POST
     @PermitAll
-    @Path("/loginToken")
+    @Path("/image")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response options3() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Authorization")
-                .build();
+    public Response uploadImage(RootImage file) {
+
+        String base64 = file.file.data_uri.split(",")[1];
+        byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
+        java.nio.file.Path path = Paths.get("./images/", file.file.filename);
+        try {
+            String pathToReturn = Files.write(path, decodedImage).toString();
+            return Response.ok(pathToReturn.substring(1)).build();
+        } catch (IOException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
-    @OPTIONS
+ /**
+     * Edit user's profile
+     *
+     * @param user - (User) the model of the user
+     * @return Response - the response with the edited user embedded
+     */
+    @PUT
     @PermitAll
-    @Path("/login")
+    @Path("/editProfile")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response options2() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
+    public Response editUser(User user) {
+        try{
+            UserRepository repo = new UserRepository();
+            User dbUser = repo.getUserByUniqueID(user.getUniqueId());
 
+            user.setID(dbUser.getId());
+            user.setRole(dbUser.getRole());
+
+            if(dbUser.getToken() != null){
+                user.setToken(dbUser.getToken());
+            }
+            if(dbUser.getImageUrl() != null){
+                user.setImageUrl(dbUser.getImageUrl());
+            }
+
+            if(user.getEmail() == null){
+                user.setEmail(dbUser.getEmail());
+            }
+            if(user.getName() == null){
+                user.setName(dbUser.getName());
+            }
+            if(user.getBirthDate() == null){
+                user.setBirthDate(dbUser.getBirthDate());
+            }
+            if(user.getPassword() == null){
+                user.setPassword(dbUser.getPassword());
+            }
+            if(user.getProfession() == null){
+                user.setProfession(dbUser.getProfession());
+            }
+
+            //TODO: Verify email using token
+
+            repo.updateUser(user);
+            User newUser = repo.getUserByUniqueID(user.getUniqueId());
+            return Response.ok(newUser).build();
+        } catch(NullPointerException e){
+            return Response.serverError().entity("Internal error.").build();
+        }
+    }
 }

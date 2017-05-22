@@ -151,6 +151,6 @@ public abstract class AbstractRepository<T> implements Repository<T> {
                 .stream()
                 .filter(predicate)
                 .findAny()
-                .get();
+                .orElse(null);
     }
 }

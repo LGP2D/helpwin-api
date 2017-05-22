@@ -72,6 +72,16 @@ public class ActionController {
         }
     }
 
+   /*@PermitAll
+    @POST
+    @Path("actions/volunteerSubmit/{idAction}/{idUser}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response VolunteerSubmit(Action action) {
+        ActionRepository actionRepository = new ActionRepository();
+
+    }*/
+
     @PermitAll
     @POST
     @Path("actions/submit/{actionId}")

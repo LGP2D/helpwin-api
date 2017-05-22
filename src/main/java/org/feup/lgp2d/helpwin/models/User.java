@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +20,8 @@ public class User {
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Column(name = "user_id")
+    private Integer id;
 
     @JsonIgnore
     @Column(unique = true, nullable = false)
@@ -51,6 +54,15 @@ public class User {
     @JsonIgnore
     private String token;
 
+    /*@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_actions", joinColumns = {
+            @JoinColumn(name = "user_id", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "action_id", nullable = false, updatable = false)
+    })
+    private List<Action> userActions = new ArrayList<>();*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    private List<UserAction> userActions = new ArrayList<>();
+
     /**
      * Constructors
      */
@@ -79,7 +91,7 @@ public class User {
      * Getters
      */
     @JsonIgnore
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -116,6 +128,9 @@ public class User {
     public String getToken() {
         return token;
     }
+    public List<UserAction> getUserActions() {
+        return userActions;
+    }
 
     /**
      * Setters
@@ -130,7 +145,26 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+    public void setID(int ID){this.id = ID;}
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    public void setUserActions(List<UserAction> userActions) {
+        this.userActions = userActions;
     }
 }

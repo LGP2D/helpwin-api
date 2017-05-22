@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +20,8 @@ public class Action {
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Column(name = "action_id")
+    private Integer id;
 
     @JsonIgnore
     @Column(unique=true)
@@ -47,6 +50,13 @@ public class Action {
 
     @OneToOne (cascade = CascadeType.REFRESH)
     private Institution institution;
+
+    /*@ManyToMany(fetch = FetchType.LAZY, mappedBy = "userActions")
+    private List<User> users = new ArrayList<>();*/
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.action")
+    private List<UserAction> userActions = new ArrayList<>();
+
 
     /**
      * Constructors
@@ -83,7 +93,7 @@ public class Action {
      * Getters
      */
     @JsonProperty("id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -122,5 +132,9 @@ public class Action {
 
     public int getAvailablePosition() {
         return availablePosition;
+    }
+
+    public List<UserAction> getUserActions() {
+        return userActions;
     }
 }
