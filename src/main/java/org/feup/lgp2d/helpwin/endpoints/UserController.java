@@ -1,6 +1,5 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
-import com.sun.java.swing.action.OkAction;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
