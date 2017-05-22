@@ -21,31 +21,34 @@ public class Action {
     private int id;
 
     @JsonIgnore
-    @Column(unique=true)
+    @Column(unique = true)
     private String uniqueId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String type;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String description;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Date startDate;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Date endDate;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private boolean valid;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private boolean verified;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private int availablePosition;
 
-    @OneToOne (cascade = CascadeType.REFRESH)
+    @OneToOne(cascade = CascadeType.REFRESH)
+    private User user;
+
+    @OneToOne(cascade = CascadeType.REFRESH)
     private Institution institution;
 
     /**
@@ -54,29 +57,31 @@ public class Action {
 
     public Action() {
     }
-    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution,boolean verified,int availablePosition) {
-        this.id=id;
+
+    public Action(int id, String type, String description, Date startDate, Date endDate, boolean valid, Institution institution, boolean verified, int availablePosition, User user) {
+        this.id = id;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.valid = valid;
         this.institution = institution;
-        this.verified=verified;
-        this.availablePosition=availablePosition;
+        this.verified = verified;
+        this.availablePosition = availablePosition;
+        this.user = user;
     }
 
     /**
      * Utils
      */
 
-    public  void generateUniqueId(){
+    public void generateUniqueId() {
         this.uniqueId = UUID.randomUUID().toString();
     }
 
     @JsonProperty("uniqueId")
-    public void setUniqueId(String uniqueId){
-        this.uniqueId=uniqueId;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     /**
@@ -123,4 +128,6 @@ public class Action {
     public int getAvailablePosition() {
         return availablePosition;
     }
+
+    public User getUser() {return user;}
 }

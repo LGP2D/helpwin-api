@@ -15,3 +15,5 @@ INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http:
 INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http://www.wordmstemplates.com/wp-content/uploads/2015/08/gift-voucher-template-1245.jpg", "nike");
 
 #INSERT INTO vouchers(type,description,imagePath,startDate,endDate,quantity,credits,institution_id) VALUES ('Discount','10% Discount on all electronics products',"2017-08-01","2016-08-01",10,250,1);
+
+#INSERT INTO users (id,name,birthDate,email,password,profession,imageUrl,role) VALUES (1,"Anna","1997-08-01","annatest@gmail.com", "123456", "student", "http://s7d2.scene7.com/is/image/PetSmart/PB0101_HERO-Dog-TreatsRawhide-20160818?$sclp-banner-main_large$", 3)
