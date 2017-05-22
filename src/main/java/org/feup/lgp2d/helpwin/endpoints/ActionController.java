@@ -3,6 +3,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.models.Action;
 import org.feup.lgp2d.helpwin.models.User;
 import org.feup.lgp2d.helpwin.models.UserAction;
@@ -107,14 +108,14 @@ public class ActionController {
             return Response.status(Response.Status.NO_CONTENT).entity("Action not available").build();
         }
 
-            UserAction userAction = new UserAction();
-            userAction.setUser(user);
-            userAction.setAction(action);
+        UserAction userAction = new UserAction();
+        userAction.setUser(user);
+        userAction.setAction(action);
 
-            user.getUserActions().add(userAction);
-            userRepository.updateUser(user);
-            return Response.ok("Action added to User action.").build();
-        }
+        user.getUserActions().add(userAction);
+        userRepository.updateUser(user);
+        return Response.ok("Action added to User action.").build();
+    }
 
 
     @PermitAll
@@ -122,8 +123,18 @@ public class ActionController {
     @Path("actions/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response deleteActionById(@PathParam("id") int id) {
+        if (id == 0){
+            return Response.status(Response.Status.NOT_FOUND).entity("Action not found").build();
+        }
+
         ActionRepository actionRepository = new ActionRepository();
-        actionRepository.delete(id);
+        Action action = actionRepository.getOne(id);
+        if (action.getUserActions().size()>0) {
+            return Response.status(Response.Status.NOT_FOUND).entity("User Actions Not Found").build();
+        }
+
+        action.getUserActions().clear();
+
         return Response.ok("Action deleted.").build();
     }
 
