@@ -5,11 +5,13 @@ import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionR
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
 import org.feup.lgp2d.helpwin.models.User;
+import org.feup.lgp2d.helpwin.models.UserAction;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.Date;
 import java.util.List;
 
 @Path("actions")
@@ -91,9 +93,19 @@ public class ActionController {
         UserRepository userRepository = new UserRepository();
         String email = TokenHelper.getEmail(token);
         User user = userRepository.getOne(u -> u.getEmail().equals(email));
+        if (user == null) { return null; }
+
         ActionRepository actionRepository = new ActionRepository();
         Action action = actionRepository.getOne(actionId);
-        return Response.ok("Action User adedd to Ation.").build();
+        if (action.getAvailablePosition() == 0) { return null; }
+
+        UserAction userAction = new UserAction();
+        userAction.setUser(user);
+        userAction.setAction(action);
+
+        user.getUserActions().add(userAction);
+        userRepository.updateUser(user);
+        return Response.ok("Action added to User action.").build();
     }
 
     @PermitAll
