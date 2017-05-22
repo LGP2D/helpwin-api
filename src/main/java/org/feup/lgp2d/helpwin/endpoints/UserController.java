@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import com.sun.java.swing.action.OkAction;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
@@ -22,6 +23,16 @@ import java.util.List;
 
 @Path("user")
 public class UserController {
+
+    @GET
+    @Path("/u")
+    @PermitAll
+    public Response test() {
+        UserRepository userRepository = new UserRepository();
+        List<User> users = userRepository.getAll();
+        int x = users.get(0).getUserActions().size();
+        return null;
+    }
 
     @GET
     @PermitAll
