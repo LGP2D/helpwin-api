@@ -34,7 +34,7 @@ public class ActionController {
     @GET
     @Path("actions/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getActionById(@PathParam("id")int id) {
+    public Response getActionById(@PathParam("id") int id) {
         ActionRepository actionRepository = new ActionRepository();
         Action action = actionRepository.getOne(id);
         if (action != null) {
@@ -89,35 +89,43 @@ public class ActionController {
     @Path("actions/submit/{actionId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response submitAction(@PathParam("actionId")int actionId, @HeaderParam("Authorization")String token) {
+    public Response submitAction(@PathParam("actionId") int actionId, @HeaderParam("Authorization") String token) {
         UserRepository userRepository = new UserRepository();
         String email = TokenHelper.getEmail(token);
         User user = userRepository.getOne(u -> u.getEmail().equals(email));
-        if (user == null) { return null; }
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not retrieve user").build();
+        }
 
         ActionRepository actionRepository = new ActionRepository();
         Action action = actionRepository.getOne(actionId);
-        if (action.getAvailablePosition() == 0) { return null; }
+        if (action == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Action not found").build();
+        }
+        if (action.getAvailablePosition() == 0) {
 
-        UserAction userAction = new UserAction();
-        userAction.setUser(user);
-        userAction.setAction(action);
+            return Response.status(Response.Status.NO_CONTENT).entity("Action not available").build();
+        }
 
-        user.getUserActions().add(userAction);
-        userRepository.updateUser(user);
-        return Response.ok("Action added to User action.").build();
-    }
+            UserAction userAction = new UserAction();
+            userAction.setUser(user);
+            userAction.setAction(action);
+
+            user.getUserActions().add(userAction);
+            userRepository.updateUser(user);
+            return Response.ok("Action added to User action.").build();
+        }
+
 
     @PermitAll
     @DELETE
     @Path("actions/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteActionById(@PathParam("id")int id) {
+    public Response deleteActionById(@PathParam("id") int id) {
         ActionRepository actionRepository = new ActionRepository();
         actionRepository.delete(id);
         return Response.ok("Action deleted.").build();
     }
-
 
 
 }
