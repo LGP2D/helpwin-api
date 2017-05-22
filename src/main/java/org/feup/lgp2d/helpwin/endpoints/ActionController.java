@@ -1,7 +1,10 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
+import org.feup.lgp2d.helpwin.models.User;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -67,6 +70,20 @@ public class ActionController {
         } else {
             return Response.serverError().entity("Something happened trying to update your record on database").build();
         }
+    }
+
+    @PermitAll
+    @POST
+    @Path("actions/submit/{actionId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response submitAction(@PathParam("actionId")int actionId, @HeaderParam("Authorization")String token) {
+        UserRepository userRepository = new UserRepository();
+        String email = TokenHelper.getEmail(token);
+        User user = userRepository.getOne(u -> u.getEmail().equals(email));
+        ActionRepository actionRepository = new ActionRepository();
+        Action action = actionRepository.getOne(actionId);
+        return Response.ok("Action User adedd to Ation.").build();
     }
 
     @PermitAll
