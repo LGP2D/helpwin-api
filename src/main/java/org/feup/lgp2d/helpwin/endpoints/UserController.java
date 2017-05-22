@@ -23,14 +23,6 @@ import java.util.List;
 @Path("user")
 public class UserController {
 
-    @OPTIONS
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response options() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
-
     @GET
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
@@ -126,35 +118,6 @@ public class UserController {
         return Response.ok(userToRetrieve).build();
     }
 
-    @OPTIONS
-    @PermitAll
-    @Path("/loginToken")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response options3() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Authorization")
-                .build();
-    }
-
-    @OPTIONS
-    @PermitAll
-    @Path("/login")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response options2() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
-
-    @OPTIONS
-    @PermitAll
-    @Path("/image")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response options4() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
-
     @POST
     @PermitAll
     @Path("/image")
@@ -223,14 +186,4 @@ public class UserController {
             return Response.serverError().entity("Internal error.").build();
         }
     }
-
-    @OPTIONS
-    @PermitAll
-    @Path("/editProfile")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response option5() {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*").build();
-    }
-
 }
