@@ -49,6 +49,11 @@ public class UserController {
         if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
             user.setImageUrl("/images/HELPWIN.png");
         }
+
+        if (user.getRole().getDescription().contentEquals("VOLUNTEER")){
+            user.setActive(true);
+        }
+
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
     }
@@ -72,6 +77,11 @@ public class UserController {
     public Response authenticateUser(User user) {
         UserRepository userRepository = new UserRepository();
         User userToRetrieve = userRepository.authenticateUser(user);
+
+        if (userToRetrieve == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
+        }
+
         if (userToRetrieve.getPassword() != null) {
             userToRetrieve.setPassword(null);
         }
@@ -239,5 +249,43 @@ public class UserController {
         userRepository.updateUser(user);
 
         return Response.ok("Coins successfully removed").build();
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/deactivate")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deactivateUser(@HeaderParam(value = "Authorization") final String token, User user) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User userToDeactivate = userRepository.getUserByUniqueID(user.getUniqueId());
+        if (userToDeactivate == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        userToDeactivate.setActive(false);
+
+        userRepository.updateUser(userToDeactivate);
+
+        return Response.ok("User successfully deactivated").build();
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/activate")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response activate(@HeaderParam(value = "Authorization") final String token, User user) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User userToActivate = userRepository.getUserByUniqueID(user.getUniqueId());
+        if (userToActivate == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        userToActivate.setActive(true);
+
+        userRepository.updateUser(userToActivate);
+
+        return Response.ok("User successfully activated").build();
     }
 }
