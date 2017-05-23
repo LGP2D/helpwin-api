@@ -199,7 +199,9 @@ public class UserController {
         User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
         if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
 
-        int credits = user.getCredits() + coins.getCoinsToAdd();
+        int coinsToAdd = Math.abs(coins.getCoinsToAdd());
+
+        int credits = user.getCredits() + coinsToAdd;
         user.setCredits(credits);
 
         userRepository.updateUser(user);
@@ -224,7 +226,9 @@ public class UserController {
             return Response.status(Response.Status.BAD_REQUEST).entity("Negative balance").build();
         }
 
-        int credits = user.getCredits() - coins.getCoinsToRemove();
+        int coinsToAdd = Math.abs(coins.getCoinsToAdd());
+
+        int credits = user.getCredits() - coinsToAdd;
         user.setCredits(credits);
 
         userRepository.updateUser(user);
