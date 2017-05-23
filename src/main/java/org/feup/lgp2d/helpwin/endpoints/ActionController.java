@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
@@ -129,13 +130,13 @@ public class ActionController {
     @Path("/institutionActions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInstitutionActions(User user) {
+    public Response getInstitutionActions(@HeaderParam("Authorization")String token) {
         List<Action> actions = new ArrayList<>();
         ActionRepository actionRepository = new ActionRepository();
 
         List<Action> actionsR = actionRepository.getAll();
         for (Action a : actionsR) {
-            if (a.getUser().getUniqueId().equals(user.getUniqueId())) {
+            if (a.getUser().getUniqueId().equals(TokenHelper.getEmail(token))) {
                 actions.add(a);
             }
         }
