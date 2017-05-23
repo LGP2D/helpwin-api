@@ -122,6 +122,12 @@ public class UserController {
     @Path("/image")
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadImage(RootImage file) {
+        if (file == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Image null").build(); }
+        if (file.file == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Image null").build(); }
+        if (file.file.data_uri == null || file.file.filename == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Image data incorrect").build();
+        }
+
         String base64 = file.file.data_uri.split(",")[1];
         byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
         java.nio.file.Path path = Paths.get("./images/", file.file.filename);
