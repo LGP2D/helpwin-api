@@ -139,4 +139,8 @@ public class Action {
     public List<UserAction> getUserActions() {
         return userActions;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

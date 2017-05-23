@@ -1,7 +1,9 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
+import org.feup.lgp2d.helpwin.models.User;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -46,6 +48,9 @@ public class ActionController {
     public Response createAction(Action action) {
         ActionRepository actionRepository = new ActionRepository();
         action.generateUniqueId();
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getUserByUniqueID(action.getUser().getUniqueId());
+        action.setUser(user);
         Action actionToRetrieve = actionRepository.create(action);
         if (actionToRetrieve != null) {
             return Response.ok().entity(actionToRetrieve).build();
