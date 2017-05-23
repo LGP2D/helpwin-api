@@ -18,6 +18,9 @@ public class UserAction {
     @Column
     private Date createdAt;
 
+    private EvaluationStatus evaluationStatus = new EvaluationStatus(EvaluationStatus.Status.PENDING.toString());
+
+
     public UserAction() {
     }
 
@@ -57,6 +60,14 @@ public class UserAction {
     }
     public void setElected(boolean elected) {
         this.elected = elected;
+    }
+
+    @OneToOne(cascade = CascadeType.REFRESH)
+    public EvaluationStatus getEvaluationStatus() {
+        return evaluationStatus;
+    }
+    public void setEvaluationStatus(EvaluationStatus evaluationStatus) {
+        this.evaluationStatus = evaluationStatus;
     }
 
     public boolean equals(Object o) {

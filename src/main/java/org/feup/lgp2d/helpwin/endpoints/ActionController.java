@@ -53,6 +53,9 @@ public class ActionController {
         action.generateUniqueId();
         UserRepository userRepository = new UserRepository();
         User user = userRepository.getUserByUniqueID(action.getUser().getUniqueId());
+
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
         action.setUser(user);
         Action actionToRetrieve = actionRepository.create(action);
         if (actionToRetrieve != null) {

@@ -6,8 +6,8 @@ INSERT INTO roles (description) VALUES ("COMPANY");
 INSERT INTO institutions(description,imageUrl,name) values("ONG medica","http://test.com","MEDIS");
 INSERT INTO institutions(description,imageUrl,name) values("SEM ABRIGOS","http://test2.com","CORACAO QUENTE");
 
-#INSERT INTO actions(description,endDate,startDate,type,valid,institution_id) values("Action A","2017-08-01","2017-08-01","tipo test",true,1);
-#INSERT INTO actions(description,endDate,startDate,type,valid,institution_id,verified,availablePosition) values("Action A","2017-08-01","2017-08-01","tipo test",true,1,false,10);
+#INSERT INTO actions(description,endDate,startDate,type,isActive,institution_id) values("Action A","2017-08-01","2017-08-01","tipo test",true,1);
+#INSERT INTO actions(description,endDate,startDate,type,isActive,institution_id,verified,availablePosition) values("Action A","2017-08-01","2017-08-01","tipo test",true,1,false,10);
 
 INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http://voxsingingacademy.com.au/wp-content/uploads/2012/11/gift-voucher.png", "fnac");
 INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http://www.carloisles.com/project-cms/wp-content/uploads/2014/10/Takatack-Free-150-Shopping-Voucher-Coupon.png", "worten");
@@ -15,3 +15,7 @@ INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http:
 INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http://www.wordmstemplates.com/wp-content/uploads/2015/08/gift-voucher-template-1245.jpg", "nike");
 
 #INSERT INTO vouchers(type,description,imagePath,startDate,endDate,quantity,credits,institution_id) VALUES ('Discount','10% Discount on all electronics products',"2017-08-01","2016-08-01",10,250,1);
+
+INSERT INTO evaluation_status(description) VALUES ("PENDING");
+INSERT INTO evaluation_status(description) VALUES ("SUCCESS");
+INSERT INTO evaluation_status(description) VALUES ("FAILED");

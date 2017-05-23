@@ -33,5 +33,6 @@
         <mapping class="org.feup.lgp2d.helpwin.models.Voucher"/>
         <mapping class="org.feup.lgp2d.helpwin.models.UserAction"/>
         <mapping class="org.feup.lgp2d.helpwin.models.UserActionId"/>
+        <mapping class="org.feup.lgp2d.helpwin.models.EvaluationStatus"/>
     </session-factory>
 </hibernate-configuration>
