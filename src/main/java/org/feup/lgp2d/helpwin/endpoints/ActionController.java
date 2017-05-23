@@ -52,7 +52,16 @@ public class ActionController {
         ActionRepository actionRepository = new ActionRepository();
         action.generateUniqueId();
         UserRepository userRepository = new UserRepository();
-        User user = userRepository.getUserByUniqueID(action.getUser().getUniqueId());
+        List<User> users = userRepository.getAll();
+        User user = new User();
+
+        for (User u: users) {
+            if(u.getUniqueId().equals(action.getUser().getUniqueId())){
+                user = u;
+                break;
+            }
+        }
+
         action.setUser(user);
         Action actionToRetrieve = actionRepository.create(action);
         if (actionToRetrieve != null) {
@@ -136,7 +145,7 @@ public class ActionController {
 
         List<Action> actionsR = actionRepository.getAll();
         for (Action a : actionsR) {
-            if (a.getUser().getUniqueId().equals(TokenHelper.getEmail(token))) {
+            if (a.getUser().getEmail().equals(TokenHelper.getEmail(token))) {
                 actions.add(a);
             }
         }
