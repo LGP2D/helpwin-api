@@ -95,8 +95,7 @@ public class ActionController {
 
         List<Action> actions = actionRepository.getAll();
         Action actionR = null;
-        for (Action a :
-                actions) {
+        for (Action a : actions) {
             if(a.getUniqueId().equals(action.getUniqueId())){
                 actionR = a;
                 break;
@@ -124,4 +123,28 @@ public class ActionController {
             u.setRole(null);
         }
     }
+
+    @PermitAll
+    @POST
+    @Path("/institutionActions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInstitutionActions(User user) {
+        List<Action> actions = new ArrayList<>();
+        ActionRepository actionRepository = new ActionRepository();
+
+        List<Action> actionsR = actionRepository.getAll();
+        for (Action a : actionsR) {
+            if (a.getUser().getUniqueId().equals(user.getUniqueId())) {
+                actions.add(a);
+            }
+        }
+
+        if (actions.size() > 0) {
+            return Response.ok().entity(actions).build();
+        } else {
+            return Response.serverError().entity("Institution has no actions.").build();
+        }
+    }
+
 }
