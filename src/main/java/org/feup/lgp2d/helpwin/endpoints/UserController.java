@@ -45,7 +45,7 @@ public class UserController {
             user.generateUniqueId();
         }
         if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
-            user.setImageUrl("http://i.imgur.com/Qo3dP6Z.png");
+            user.setImageUrl("/images/HELPWIN.png");
         }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
@@ -120,7 +120,6 @@ public class UserController {
     @Path("/image")
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadImage(RootImage file) {
-
         String base64 = file.file.data_uri.split(",")[1];
         byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
         java.nio.file.Path path = Paths.get("./images/", file.file.filename);
