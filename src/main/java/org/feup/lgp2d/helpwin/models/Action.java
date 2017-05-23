@@ -35,10 +35,10 @@ public class Action {
     private String description;
 
     @Column(nullable=false)
-    private Date startDate;
+    private Date dateStart;
 
     @Column(nullable=false)
-    private Date endDate;
+    private Date dateEnd;
 
     @Column(nullable=false)
     private boolean valid;
@@ -52,8 +52,11 @@ public class Action {
     @OneToOne (cascade = CascadeType.REFRESH)
     private User user;
 
-    /*@ManyToMany(fetch = FetchType.LAZY, mappedBy = "userActions")
-    private List<User> users = new ArrayList<>();*/
+    @Column(nullable = false)
+    private Integer credits;
+
+    @Column(nullable = false)
+    private String location;
 
     @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.action")
@@ -66,16 +69,30 @@ public class Action {
 
     public Action() {
     }
-    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, User user,boolean verified,int availablePosition) {
+    public Action(int id, String type, String description, Date dateStart, Date dateEnd, boolean valid, User user, boolean verified, int availablePosition) {
         this.id=id;
         this.type = type;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
         this.valid = valid;
         this.user = user;
         this.verified=verified;
         this.availablePosition=availablePosition;
+    }
+
+    public Action(String uniqueId, String type, String description, Date dateStart, Date dateEnd, boolean valid, boolean verified, int availablePosition, User user, Integer credits, String location) {
+        this.uniqueId = uniqueId;
+        this.type = type;
+        this.description = description;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.valid = valid;
+        this.verified = verified;
+        this.availablePosition = availablePosition;
+        this.user = user;
+        this.credits = credits;
+        this.location = location;
     }
 
     /**
@@ -112,12 +129,12 @@ public class Action {
         return description;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getDateStart() {
+        return dateStart;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getDateEnd() {
+        return dateEnd;
     }
 
     public boolean isValid() {
@@ -143,4 +160,14 @@ public class Action {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Integer getCredits() {
+        return credits;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+
 }
