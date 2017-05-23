@@ -41,11 +41,11 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("actions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createAction(Action action) {
         ActionRepository actionRepository = new ActionRepository();
+        action.generateUniqueId();
         Action actionToRetrieve = actionRepository.create(action);
         if (actionToRetrieve != null) {
             return Response.ok().entity(actionToRetrieve).build();
@@ -56,7 +56,6 @@ public class ActionController {
 
     @PermitAll
     @PUT
-    @Path("actions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAction(Action action) {
@@ -78,7 +77,6 @@ public class ActionController {
         actionRepository.delete(id);
         return Response.ok("Action deleted.").build();
     }
-
 
 
 }

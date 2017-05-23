@@ -2,7 +2,9 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.InstitutionRepository;
+import org.feup.lgp2d.helpwin.models.Action;
 import org.feup.lgp2d.helpwin.models.Institution;
+import org.feup.lgp2d.helpwin.models.User;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -80,6 +82,18 @@ public class InstitutionController {
         return Response.ok("Institution deleted.").build();
     }
 
-
+    @PermitAll
+    @POST
+    @Path("/userProfiles")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInstitutionUserProfiles(Action action) {
+        InstitutionRepository institutionRepository = new InstitutionRepository();
+        List<User> users = institutionRepository.getUserProfiles(action);
+        if (!users.isEmpty()) {
+            return Response.ok().entity(users).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+        }
+    }
 
 }

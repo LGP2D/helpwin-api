@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -60,6 +61,7 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "action_id", nullable = false, updatable = false)
     })
     private List<Action> userActions = new ArrayList<>();*/
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
     private List<UserAction> userActions = new ArrayList<>();
 
