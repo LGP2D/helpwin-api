@@ -2,6 +2,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.models.Coins;
 import org.feup.lgp2d.helpwin.models.RootImage;
 import org.feup.lgp2d.helpwin.models.User;
 
@@ -16,6 +17,7 @@ import java.nio.file.*;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Path("user")
 public class UserController {
@@ -45,7 +47,7 @@ public class UserController {
             user.generateUniqueId();
         }
         if (user.getImageUrl() == null || user.getImageUrl().isEmpty()) {
-            user.setImageUrl("http://i.imgur.com/Qo3dP6Z.png");
+            user.setImageUrl("/images/HELPWIN.png");
         }
         User userToRetrieve = userRepository.create(user);
         return Response.ok(userToRetrieve).build();
@@ -120,7 +122,6 @@ public class UserController {
     @Path("/image")
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadImage(RootImage file) {
-
         String base64 = file.file.data_uri.split(",")[1];
         byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
         java.nio.file.Path path = Paths.get("./images/", file.file.filename);
@@ -132,7 +133,7 @@ public class UserController {
         }
     }
 
- /**
+    /**
      * Edit user's profile
      *
      * @param user - (User) the model of the user
@@ -182,5 +183,55 @@ public class UserController {
         } catch(NullPointerException e){
             return Response.serverError().entity("Internal error.").build();
         }
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/add-coins")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response addCoins(Coins coins, @HeaderParam(value = "Authorization") final String token) {
+        String email = TokenHelper.getEmail(token);
+        if (email == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        int coinsToAdd = Math.abs(coins.getCoinsToAdd());
+
+        int credits = user.getCredits() + coinsToAdd;
+        user.setCredits(credits);
+
+        userRepository.updateUser(user);
+
+        return Response.ok("Coins successfully added").build();
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/remove-coins")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response removeCoins(Coins coins, @HeaderParam(value = "Authorization") final String token) {
+        String email = TokenHelper.getEmail(token);
+        if (email == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        if (coins.getCoinsToRemove() > user.getCredits()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Negative balance").build();
+        }
+
+        int coinsToAdd = Math.abs(coins.getCoinsToAdd());
+
+        int credits = user.getCredits() - coinsToAdd;
+        user.setCredits(credits);
+
+        userRepository.updateUser(user);
+
+        return Response.ok("Coins successfully removed").build();
     }
 }
