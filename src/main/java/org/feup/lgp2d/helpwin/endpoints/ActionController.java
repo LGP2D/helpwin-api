@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
@@ -145,6 +146,44 @@ public class ActionController {
         } else {
             return Response.serverError().entity("Institution has no actions.").build();
         }
+    }
+
+    @PermitAll
+    @PUT
+    @Path("/validate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response validateAction(@HeaderParam(value = "Authorization")final String token, Action action) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+        
+        ActionRepository actionRepository = new ActionRepository();
+        Action actionToValidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+        if (actionToValidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+
+        actionToValidate.setVerified(true);
+
+        actionRepository.update(actionToValidate);
+
+        return Response.ok("Action successfully validated").build();
+    }
+
+    @PermitAll
+    @PUT
+    @Path("/invalidate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response invalidateAction(@HeaderParam(value = "Authorization")final String token, Action action) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        ActionRepository actionRepository = new ActionRepository();
+        Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+        if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+
+        actionToInvalidate.setVerified(false);
+
+        actionRepository.update(actionToInvalidate);
+
+        return Response.ok("Action successfully invalidated").build();
     }
 
 }

@@ -44,7 +44,8 @@ public class Action {
     private boolean valid;
 
     @Column(nullable=false)
-    private boolean verified;
+    @JsonIgnore
+    private boolean verified = false;
 
     @Column(nullable=false)
     private int availablePosition;
@@ -169,5 +170,10 @@ public class Action {
         return location;
     }
 
-
+    /**
+     * Setters
+     */
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
 }
