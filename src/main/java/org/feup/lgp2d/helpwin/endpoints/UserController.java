@@ -2,6 +2,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
+import org.feup.lgp2d.helpwin.models.Coins;
 import org.feup.lgp2d.helpwin.models.RootImage;
 import org.feup.lgp2d.helpwin.models.User;
 
@@ -16,6 +17,7 @@ import java.nio.file.*;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Path("user")
 public class UserController {
@@ -132,7 +134,7 @@ public class UserController {
         }
     }
 
- /**
+    /**
      * Edit user's profile
      *
      * @param user - (User) the model of the user
@@ -182,5 +184,51 @@ public class UserController {
         } catch(NullPointerException e){
             return Response.serverError().entity("Internal error.").build();
         }
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/add-coins")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response addCoins(Coins coins, @HeaderParam(value = "Authorization") final String token) {
+        String email = TokenHelper.getEmail(token);
+        if (email == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        int credits = user.getCredits() + coins.getCoinsToAdd();
+        user.setCredits(credits);
+
+        userRepository.updateUser(user);
+
+        return Response.ok("Coins successfully added").build();
+    }
+
+    @PUT
+    @PermitAll
+    @Path("/remove-coins")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response removeCoins(Coins coins, @HeaderParam(value = "Authorization") final String token) {
+        String email = TokenHelper.getEmail(token);
+        if (email == null) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        if (coins.getCoinsToRemove() > user.getCredits()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Negative balance").build();
+        }
+
+        int credits = user.getCredits() - coins.getCoinsToRemove();
+        user.setCredits(credits);
+
+        userRepository.updateUser(user);
+
+        return Response.ok("Coins successfully removed").build();
     }
 }

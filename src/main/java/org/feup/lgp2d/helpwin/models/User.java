@@ -55,21 +55,18 @@ public class User {
     @JsonIgnore
     private String token;
 
-    /*@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_actions", joinColumns = {
-            @JoinColumn(name = "user_id", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "action_id", nullable = false, updatable = false)
-    })
-    private List<Action> userActions = new ArrayList<>();*/
     @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
     private List<UserAction> userActions = new ArrayList<>();
 
+    @Column
+    @JsonIgnore
+    private Integer credits = 0;
+
     /**
      * Constructors
      */
-    public User() {
-    }
+    public User() {}
     public User(int id, String name, Date birthDate, String email, String password,
                 String profession, String imageUrl, Role role) {
         this.id = id;
@@ -133,6 +130,10 @@ public class User {
     public List<UserAction> getUserActions() {
         return userActions;
     }
+    @JsonProperty("credits")
+    public int getCredits() {
+        return credits;
+    }
 
     /**
      * Setters
@@ -168,5 +169,8 @@ public class User {
     }
     public void setUserActions(List<UserAction> userActions) {
         this.userActions = userActions;
+    }
+    public void setCredits(Integer credits) {
+        this.credits = credits;
     }
 }
