@@ -50,10 +50,6 @@ public class Voucher {
     @Column
     private Integer credits;
 
-    /* Porque Instituion estão no Voucher?
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Institution institution;
-    */
     public Voucher() {}
 
     public Voucher(String description, String imagePath, String company) {
@@ -63,7 +59,7 @@ public class Voucher {
     }
 
     public Voucher(int id, String uniqueId, String type, String description, Date startDate,
-                   Date endDate, Integer quantity, Integer credits /* , Institution institution */) {
+                   Date endDate, Integer quantity, Integer credits) {
         this.id = id;
         this.uniqueId = uniqueId;
         this.type = type;
@@ -72,7 +68,6 @@ public class Voucher {
         this.endDate = endDate;
         this.quantity = quantity;
         this.credits = credits;
-        //this.institution = institution;
     }
 
     /**
@@ -111,10 +106,6 @@ public class Voucher {
     public Integer getCredits() {
         return credits;
     }
-
-    /* public Institution getInstitution() {
-        return institution;
-    } */
 
     public String getImagePath() { return imagePath; }
 
