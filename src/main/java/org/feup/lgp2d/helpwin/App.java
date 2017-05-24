@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.feup.lgp2d.helpwin.authentication.AuthenticationFilter;
 import org.feup.lgp2d.helpwin.cors.CORSFilter;
+import org.feup.lgp2d.helpwin.cors.CORSRequest;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -73,7 +74,9 @@ public class App {
         config.packages("org.feup.lgp2d.helpwin", "org.feup.lgp2d.helpwin.authentication", "org.feup.lgp2d.helpwin.endpoints");
         config.register(LoggingFeature.class);
         config.register(MultiPartFeature.class);
+        config.register(CORSRequest.class);
         config.register(CORSFilter.class);
+
 
         //Authentication filter register
         config.register(AuthenticationFilter.class);
@@ -112,6 +115,7 @@ public class App {
         ServletHolder root = new ServletHolder("default", DefaultServlet.class);
         root.setInitParameter("dirAllowed", "true");
         context.addServlet(root, "/");
+
 
         FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/api/*", EnumSet.of(DispatcherType.REQUEST));
         cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");

@@ -18,6 +18,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Path("user")
 public class UserController {
@@ -29,6 +30,19 @@ public class UserController {
         UserRepository userRepository = new UserRepository();
         List<User> users = userRepository.getAll();
         return Response.ok(users).build();
+    }
+
+    @GET
+    @Path("/institutions")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInstitutions() {
+        UserRepository userRepository = new UserRepository();
+        List<User> institutions = userRepository.getAll();
+        institutions = institutions.stream().filter(p -> p.getRole().getId() == 2).collect(Collectors.toList());
+
+        if (institutions == null) { return Response.status(Response.Status.NO_CONTENT).entity("No institutions to show").build(); }
+        return Response.ok(institutions).build();
     }
 
     /**
