@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("actions")
 public class ActionController {
@@ -206,6 +207,21 @@ public class ActionController {
             return Response.ok().entity(actions).build();
         } else {
             return Response.serverError().entity("Institution has no actions.").build();
+        }
+    }
+
+    @PermitAll
+    @GET
+    @Path("/verifiedValid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVerifiedValidActions() {
+        ActionRepository actionRepository = new ActionRepository();
+        List<Action> actions = actionRepository.getAll();
+        actions=actions.stream().filter(p->p.isValid()==true && p.isVerified()==true).collect(Collectors.toList());
+        if (!actions.isEmpty()) {
+            return Response.ok().entity(actions).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No records were found").build();
         }
     }
 
