@@ -35,7 +35,7 @@ public class ActionController {
 
     @PermitAll
     @GET
-    @Path("actions/{id}")
+    @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getActionById(@PathParam("id")int id) {
         ActionRepository actionRepository = new ActionRepository();
@@ -91,7 +91,7 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("actions/submit/{actionId}")
+    @Path("/submit/{actionId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response submitAction(@PathParam("actionId") int actionId, @HeaderParam("Authorization") String token) {
@@ -124,7 +124,7 @@ public class ActionController {
 
     @PermitAll
     @DELETE
-    @Path("actions/{id}")
+    @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response deleteActionById(@PathParam("id")int id) {
         ActionRepository actionRepository = new ActionRepository();
@@ -133,7 +133,7 @@ public class ActionController {
     }
 
     @PermitAll
-    @POST
+    @GET
     @Path("/userProfiles")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(Action action) {
