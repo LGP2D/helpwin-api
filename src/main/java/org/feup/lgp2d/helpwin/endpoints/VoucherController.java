@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.RoleRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.VoucherRepository;
 import org.feup.lgp2d.helpwin.models.Role;
@@ -86,5 +87,41 @@ public class VoucherController {
         VoucherRepository voucherRepository = new VoucherRepository();
         voucherRepository.delete(id);
         return Response.ok("Action deleted.").build();
+    }
+
+    @PermitAll
+    @PUT
+    @Path("/validate")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response validateVoucher(@HeaderParam(value = "Authorization") final String token, Voucher voucher){
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
+
+        VoucherRepository voucherRepository = new VoucherRepository();
+        Voucher voucherToValidate = voucherRepository.getOne(p -> p.getUniqueId().contentEquals(voucher.getUniqueId()));
+        if (voucherToValidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Voucher not found").build(); }
+
+        voucherToValidate.setValid(true);
+
+        voucherRepository.update(voucherToValidate);
+
+        return Response.ok("Voucher successfully validated").build();
+    }
+
+    @PermitAll
+    @PUT
+    @Path("/invalidate")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response invalidateVoucher(@HeaderParam(value = "Authorization") final String token, Voucher voucher){
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
+
+        VoucherRepository voucherRepository = new VoucherRepository();
+        Voucher voucherToInvalidate = voucherRepository.getOne(p -> p.getUniqueId().contentEquals(voucher.getUniqueId()));
+        if (voucherToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Voucher not found").build(); }
+
+        voucherToInvalidate.setValid(false);
+
+        voucherRepository.update(voucherToInvalidate);
+
+        return Response.ok("Voucher successfully invalidated").build();
     }
 }

@@ -50,14 +50,16 @@ public class Voucher {
     @Column
     private Integer credits;
 
-    public Voucher() {}
+    @Column
+    @JsonIgnore
+    private boolean valid = false;
 
+    public Voucher() {}
     public Voucher(String description, String imagePath, String company) {
         this.description = description;
         this.imagePath = imagePath;
         this.company = company;
     }
-
     public Voucher(int id, String uniqueId, String type, String description, Date startDate,
                    Date endDate, Integer quantity, Integer credits) {
         this.id = id;
@@ -78,7 +80,7 @@ public class Voucher {
         return id;
     }
 
-    @JsonProperty("uniqueid")
+    @JsonProperty("uniqueId")
     public String getUniqueId() {
         return uniqueId;
     }
@@ -111,6 +113,10 @@ public class Voucher {
 
     public String getCompany() { return company; }
 
+    public boolean isValid() {
+        return valid;
+    }
+
     /**
      *  Utils
      */
@@ -118,5 +124,8 @@ public class Voucher {
     @JsonProperty("uniqueId")
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
+    }
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 }

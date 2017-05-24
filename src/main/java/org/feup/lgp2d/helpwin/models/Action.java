@@ -41,10 +41,12 @@ public class Action {
     private Date endDate;
 
     @Column(nullable=false)
-    private boolean valid;
+    @JsonIgnore
+    private boolean isActive = true;
 
     @Column(nullable=false)
-    private boolean verified;
+    @JsonIgnore
+    private boolean verified = false;
 
     @Column(nullable=false)
     private int availablePosition;
@@ -69,25 +71,25 @@ public class Action {
 
     public Action() {
     }
-    public Action(int id, String type, String description, Date startDate, Date endDate, boolean valid, User user, boolean verified, int availablePosition) {
+    public Action(int id, String type, String description, Date startDate, Date endDate, boolean isActive, User user, boolean verified, int availablePosition) {
         this.id=id;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.valid = valid;
+        this.isActive = isActive;
         this.user = user;
         this.verified=verified;
         this.availablePosition=availablePosition;
     }
 
-    public Action(String uniqueId, String type, String description, Date startDate, Date endDate, boolean valid, boolean verified, int availablePosition, User user, Integer credits, String location) {
+    public Action(String uniqueId, String type, String description, Date startDate, Date endDate, boolean isActive, boolean verified, int availablePosition, User user, Integer credits, String location) {
         this.uniqueId = uniqueId;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.valid = valid;
+        this.isActive = isActive;
         this.verified = verified;
         this.availablePosition = availablePosition;
         this.user = user;
@@ -137,8 +139,8 @@ public class Action {
         return endDate;
     }
 
-    public boolean isValid() {
-        return valid;
+    public boolean isActive() {
+        return isActive;
     }
 
     public User getUser() {
@@ -169,5 +171,10 @@ public class Action {
         return location;
     }
 
-
+    /**
+     * Setters
+     */
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
 }
