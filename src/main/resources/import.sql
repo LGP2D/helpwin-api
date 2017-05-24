@@ -19,3 +19,6 @@ INSERT INTO vouchers (description, imagePath, company) VALUES ("voucher", "http:
 INSERT INTO evaluation_status(description) VALUES ("PENDING");
 INSERT INTO evaluation_status(description) VALUES ("SUCCESS");
 INSERT INTO evaluation_status(description) VALUES ("FAILED");
+
+#INSERT INTO users (id,name,birthDate,email,password,profession,imageUrl,role) VALUES (1,"Anna","1997-08-01","annatest@gmail.com", "123456", "student", "http://s7d2.scene7.com/is/image/PetSmart/PB0101_HERO-Dog-TreatsRawhide-20160818?$sclp-banner-main_large$", 3);
+

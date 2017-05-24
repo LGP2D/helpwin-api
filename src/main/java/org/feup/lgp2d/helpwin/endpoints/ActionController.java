@@ -32,7 +32,7 @@ public class ActionController {
 
     @PermitAll
     @GET
-    @Path("actions/{id}")
+    @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getActionById(@PathParam("id")int id) {
         ActionRepository actionRepository = new ActionRepository();
@@ -48,12 +48,15 @@ public class ActionController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAction(Action action) {
+    public Response createAction(@HeaderParam(value = "Authorization") final String token, Action action) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
+        String email = TokenHelper.getEmail(token);
+
         ActionRepository actionRepository = new ActionRepository();
         action.generateUniqueId();
-        UserRepository userRepository = new UserRepository();
-        User user = userRepository.getUserByUniqueID(action.getUser().getUniqueId());
 
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getUserByEmail(email);
         if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
 
         action.setUser(user);
@@ -79,9 +82,52 @@ public class ActionController {
         }
     }
 
+   /*@PermitAll
+    @POST
+    @Path("actions/volunteerSubmit/{idAction}/{idUser}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response VolunteerSubmit(Action action) {
+        ActionRepository actionRepository = new ActionRepository();
+
+    }*/
+
+    @PermitAll
+    @POST
+    @Path("/submit/{actionId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response submitAction(@PathParam("actionId") int actionId, @HeaderParam("Authorization") String token) {
+        UserRepository userRepository = new UserRepository();
+        String email = TokenHelper.getEmail(token);
+        User user = userRepository.getOne(u -> u.getEmail().equals(email));
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not retrieve user").build();
+        }
+
+        ActionRepository actionRepository = new ActionRepository();
+        Action action = actionRepository.getOne(actionId);
+        if (action == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Action not found").build();
+        }
+        if (action.getAvailablePosition() == 0) {
+
+            return Response.status(Response.Status.NO_CONTENT).entity("Action not available").build();
+        }
+
+        UserAction userAction = new UserAction();
+        userAction.setUser(user);
+        userAction.setAction(action);
+
+        user.getUserActions().add(userAction);
+        userRepository.updateUser(user);
+        return Response.ok("Action added to User action.").build();
+    }
+
+
     @PermitAll
     @DELETE
-    @Path("actions/{id}")
+    @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response deleteActionById(@PathParam("id")int id) {
         ActionRepository actionRepository = new ActionRepository();
@@ -105,8 +151,13 @@ public class ActionController {
                 break;
             }
         }
+        List<UserAction> userActionList = null;
+        try{
+            userActionList = actionR.getUserActions();
 
-        List<UserAction> userActionList = actionR.getUserActions();
+        } catch (NullPointerException ex){
+            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+        }
 
         for (UserAction userAction : userActionList) {
             usersInformation.add(userAction.getUser());
@@ -133,13 +184,13 @@ public class ActionController {
     @Path("/institutionActions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInstitutionActions(User user) {
+    public Response getInstitutionActions(@HeaderParam("Authorization")String token) {
         List<Action> actions = new ArrayList<>();
         ActionRepository actionRepository = new ActionRepository();
 
         List<Action> actionsR = actionRepository.getAll();
         for (Action a : actionsR) {
-            if (a.getUser().getUniqueId().equals(user.getUniqueId())) {
+            if (a.getUser().getEmail().equals(TokenHelper.getEmail(token))) {
                 actions.add(a);
             }
         }
