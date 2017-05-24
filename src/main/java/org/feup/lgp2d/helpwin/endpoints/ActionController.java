@@ -217,7 +217,7 @@ public class ActionController {
     public Response getVerifiedValidActions() {
         ActionRepository actionRepository = new ActionRepository();
         List<Action> actions = actionRepository.getAll();
-        actions=actions.stream().filter(p->p.isValid()==true && p.isVerified()==true).collect(Collectors.toList());
+        actions=actions.stream().filter(p->p.isActive()==true && p.isVerified()==true).collect(Collectors.toList());
         if (!actions.isEmpty()) {
             return Response.ok().entity(actions).build();
         } else {
