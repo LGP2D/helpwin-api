@@ -1,6 +1,9 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
@@ -11,8 +14,10 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("actions")
 public class ActionController {
@@ -48,16 +53,19 @@ public class ActionController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAction(@HeaderParam(value = "Authorization") final String token, Action action) {
-        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
-        String email = TokenHelper.getEmail(token);
-
+    public Response createAction(Action action) {
         ActionRepository actionRepository = new ActionRepository();
         action.generateUniqueId();
-
         UserRepository userRepository = new UserRepository();
-        User user = userRepository.getUserByEmail(email);
-        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+        List<User> users = userRepository.getAll();
+        User user = new User();
+
+        for (User u: users) {
+            if(u.getUniqueId().equals(action.getUser().getUniqueId())){
+                user = u;
+                break;
+            }
+        }
 
         action.setUser(user);
         Action actionToRetrieve = actionRepository.create(action);
@@ -203,41 +211,18 @@ public class ActionController {
     }
 
     @PermitAll
-    @PUT
-    @Path("/validate")
+    @GET
+    @Path("/verifiedValid")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response validateAction(@HeaderParam(value = "Authorization")final String token, Action action) {
-        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
-        
+    public Response getVerifiedValidActions() {
         ActionRepository actionRepository = new ActionRepository();
-        Action actionToValidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
-        if (actionToValidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
-
-        actionToValidate.setVerified(true);
-
-        actionRepository.update(actionToValidate);
-
-        return Response.ok("Action successfully validated").build();
-    }
-
-    @PermitAll
-    @PUT
-    @Path("/invalidate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response invalidateAction(@HeaderParam(value = "Authorization")final String token, Action action) {
-        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
-
-        ActionRepository actionRepository = new ActionRepository();
-        Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
-        if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
-
-        actionToInvalidate.setVerified(false);
-
-        actionRepository.update(actionToInvalidate);
-
-        return Response.ok("Action successfully invalidated").build();
+        List<Action> actions = actionRepository.getAll();
+        actions=actions.stream().filter(p->p.isActive()==true && p.isVerified()==true).collect(Collectors.toList());
+        if (!actions.isEmpty()) {
+            return Response.ok().entity(actions).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No records were found").build();
+        }
     }
 
 }
