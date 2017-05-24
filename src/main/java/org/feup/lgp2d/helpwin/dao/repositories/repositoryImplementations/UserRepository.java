@@ -39,6 +39,16 @@ public class UserRepository extends AbstractRepository<User> {
         return user;
     }
 
+    public User getUserByEmail(String email){
+        Session session = SessionUtil.getSession();
+
+        Criteria criteria = session.createCriteria(User.class);
+        User user = (User) criteria.add(Restrictions.eq("email", email))
+                .uniqueResult();
+        session.close();
+        return user;
+    }
+
     public void updateUser(User user){
         Session session = SessionUtil.getSession();
         Transaction tx = null;

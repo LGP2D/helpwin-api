@@ -1,6 +1,7 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
+import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
@@ -55,7 +56,16 @@ public class ActionController {
         ActionRepository actionRepository = new ActionRepository();
         action.generateUniqueId();
         UserRepository userRepository = new UserRepository();
-        User user = userRepository.getUserByUniqueID(action.getUser().getUniqueId());
+        List<User> users = userRepository.getAll();
+        User user = new User();
+
+        for (User u: users) {
+            if(u.getUniqueId().equals(action.getUser().getUniqueId())){
+                user = u;
+                break;
+            }
+        }
+
         action.setUser(user);
         Action actionToRetrieve = actionRepository.create(action);
         if (actionToRetrieve != null) {
@@ -133,7 +143,7 @@ public class ActionController {
     }
 
     @PermitAll
-    @GET
+    @POST
     @Path("/userProfiles")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(Action action) {
@@ -148,8 +158,13 @@ public class ActionController {
                 break;
             }
         }
+        List<UserAction> userActionList = null;
+        try{
+            userActionList = actionR.getUserActions();
 
-        List<UserAction> userActionList = actionR.getUserActions();
+        } catch (NullPointerException ex){
+            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+        }
 
         for (UserAction userAction : userActionList) {
             usersInformation.add(userAction.getUser());
@@ -176,13 +191,13 @@ public class ActionController {
     @Path("/institutionActions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInstitutionActions(User user) {
+    public Response getInstitutionActions(@HeaderParam("Authorization")String token) {
         List<Action> actions = new ArrayList<>();
         ActionRepository actionRepository = new ActionRepository();
 
         List<Action> actionsR = actionRepository.getAll();
         for (Action a : actionsR) {
-            if (a.getUser().getUniqueId().equals(user.getUniqueId())) {
+            if (a.getUser().getEmail().equals(TokenHelper.getEmail(token))) {
                 actions.add(a);
             }
         }
