@@ -1,5 +1,6 @@
 package org.feup.lgp2d.helpwin.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -49,11 +50,15 @@ public class Action {
     private int availablePosition;
 
     @OneToOne (cascade = CascadeType.REFRESH)
-    private Institution institution;
+    private User user;
 
-    /*@ManyToMany(fetch = FetchType.LAZY, mappedBy = "userActions")
-    private List<User> users = new ArrayList<>();*/
+    @Column(nullable = false)
+    private Integer credits;
 
+    @Column(nullable = false)
+    private String location;
+
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.action")
     private List<UserAction> userActions = new ArrayList<>();
 
@@ -64,16 +69,30 @@ public class Action {
 
     public Action() {
     }
-    public Action(int id,String type, String description, Date startDate, Date endDate, boolean valid, Institution institution,boolean verified,int availablePosition) {
+    public Action(int id, String type, String description, Date startDate, Date endDate, boolean valid, User user, boolean verified, int availablePosition) {
         this.id=id;
         this.type = type;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.valid = valid;
-        this.institution = institution;
+        this.user = user;
         this.verified=verified;
         this.availablePosition=availablePosition;
+    }
+
+    public Action(String uniqueId, String type, String description, Date startDate, Date endDate, boolean valid, boolean verified, int availablePosition, User user, Integer credits, String location) {
+        this.uniqueId = uniqueId;
+        this.type = type;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.valid = valid;
+        this.verified = verified;
+        this.availablePosition = availablePosition;
+        this.user = user;
+        this.credits = credits;
+        this.location = location;
     }
 
     /**
@@ -110,11 +129,11 @@ public class Action {
         return description;
     }
 
-    public Date getStarting() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public Date getEnding() {
+    public Date getEndDate() {
         return endDate;
     }
 
@@ -122,8 +141,8 @@ public class Action {
         return valid;
     }
 
-    public Institution getInstitution() {
-        return institution;
+    public User getUser() {
+        return user;
     }
 
     public boolean isVerified() {
@@ -137,4 +156,18 @@ public class Action {
     public List<UserAction> getUserActions() {
         return userActions;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getCredits() {
+        return credits;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+
 }
