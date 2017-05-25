@@ -147,18 +147,29 @@ public class VoucherController {
         VoucherRepository voucherRepository = new VoucherRepository();
         String email = TokenHelper.getEmail(token);
         List<Voucher> vouchers = voucherRepository.getAll();
-        List<Voucher> finalVouchers = vouchers.stream().filter(p -> p.getCompany().getEmail().equals(email)).collect(Collectors.toList());
-        /*List<Voucher> finalVouchers = new ArrayList<>(0);
-        for (Voucher v: vouchers) {
-            if(v.getCompany().getEmail().equals(email)){
-                finalVouchers.add(v);
-            }
-        }
-        */
+        List<Voucher> finalVouchers = vouchers.stream().filter(p -> (p.getCompany().getEmail().equals(email)  && p.isValid()) ).collect(Collectors.toList());
         if (!finalVouchers.isEmpty()) {
             return Response.ok().entity(finalVouchers).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("No records were found!").build();
         }
     }
+
+    @PermitAll
+    @POST
+    @Path("/deleteCompanyVouchers")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response deleteCompanyVoucher(Voucher voucher) {
+        try{
+            VoucherRepository voucherRepository = new VoucherRepository();
+            Voucher voucherdb = voucherRepository.getOne(p -> p.getUniqueId().equals(voucher.getUniqueId()));
+            voucherdb.setValid(false);
+            voucherRepository.update(voucherdb);
+            return Response.ok().entity("OK").build();
+        } catch (Exception e){
+            return Response.status(Response.Status.NOT_FOUND).entity("Error deleting.").build();
+        }
+    }
+
 }
