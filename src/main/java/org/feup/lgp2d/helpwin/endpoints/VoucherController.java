@@ -2,8 +2,10 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.RoleRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.VoucherRepository;
 import org.feup.lgp2d.helpwin.models.Role;
+import org.feup.lgp2d.helpwin.models.User;
 import org.feup.lgp2d.helpwin.models.Voucher;
 
 import javax.annotation.security.PermitAll;
@@ -17,7 +19,9 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("voucher")
 public class VoucherController {
@@ -51,12 +55,21 @@ public class VoucherController {
 
     @PermitAll
     @POST
-    @Path("vouchers")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createVoucher(Voucher voucher) {
         VoucherRepository voucherRepository = new VoucherRepository();
+        UserRepository userRepository = new UserRepository();
+        User company = userRepository.getUserByUniqueID(voucher.getCompany().getUniqueId());
+        if(company == null){
+            return Response.serverError().entity("No user").build();
+        }
+        voucher.setCompany(company);
+        voucher.generateUniqueId();
         Voucher voucherToRetrieve = voucherRepository.create(voucher);
+        if(voucherToRetrieve == null){
+            return Response.serverError().entity("Error voucher").build();
+        }
         if (voucherToRetrieve != null) {
             return Response.ok().entity(voucherToRetrieve).build();
         } else {
@@ -66,7 +79,6 @@ public class VoucherController {
 
     @PermitAll
     @PUT
-    @Path("vouchers")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateVoucher(Voucher voucher) {
@@ -125,5 +137,28 @@ public class VoucherController {
         voucherRepository.update(voucherToInvalidate);
 
         return Response.ok("Voucher successfully invalidated").build();
+    }
+
+    @PermitAll
+    @Path("/companyVouchers")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCompanyVouchers(@HeaderParam("Authorization")String token) {
+        VoucherRepository voucherRepository = new VoucherRepository();
+        String email = TokenHelper.getEmail(token);
+        List<Voucher> vouchers = voucherRepository.getAll();
+        List<Voucher> finalVouchers = vouchers.stream().filter(p -> p.getCompany().getEmail().equals(email)).collect(Collectors.toList());
+        /*List<Voucher> finalVouchers = new ArrayList<>(0);
+        for (Voucher v: vouchers) {
+            if(v.getCompany().getEmail().equals(email)){
+                finalVouchers.add(v);
+            }
+        }
+        */
+        if (!finalVouchers.isEmpty()) {
+            return Response.ok().entity(finalVouchers).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No records were found!").build();
+        }
     }
 }

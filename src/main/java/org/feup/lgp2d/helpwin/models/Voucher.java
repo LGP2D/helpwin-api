@@ -36,40 +36,34 @@ public class Voucher {
     private String imagePath;
 
     @Column(nullable = false)
-    private String company;
-
-    @Column
     private Date startDate;
 
-    @Column
+    @Column(nullable = false)
     private Date endDate;
 
-    @Column
-    private Integer quantity;
-
-    @Column
+    @Column(nullable = false)
     private Integer credits;
 
-    @Column
+    @Column(nullable = false)
     @JsonIgnore
     private boolean valid = false;
 
+    @OneToOne(cascade = CascadeType.REFRESH)
+    private User company;
+
     public Voucher() {}
-    public Voucher(String description, String imagePath, String company) {
-        this.description = description;
-        this.imagePath = imagePath;
-        this.company = company;
-    }
-    public Voucher(int id, String uniqueId, String type, String description, Date startDate,
-                   Date endDate, Integer quantity, Integer credits) {
-        this.id = id;
+
+    public Voucher(String uniqueId, String type, String description, String imagePath, Date startDate, Date endDate,
+                   Integer credits, boolean valid, User company) {
         this.uniqueId = uniqueId;
         this.type = type;
         this.description = description;
+        this.imagePath = imagePath;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.quantity = quantity;
         this.credits = credits;
+        this.valid = valid;
+        this.company = company;
     }
 
     /**
@@ -101,17 +95,13 @@ public class Voucher {
         return endDate;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
     public Integer getCredits() {
         return credits;
     }
 
     public String getImagePath() { return imagePath; }
 
-    public String getCompany() { return company; }
+    public User getCompany() { return company; }
 
     @JsonProperty("valid")
     public boolean isValid() {
@@ -128,5 +118,9 @@ public class Voucher {
     }
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public void setCompany(User company) {
+        this.company = company;
     }
 }
