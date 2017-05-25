@@ -99,7 +99,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 if (!isUserAllowed(email, rolesSet)) {
                     containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                             .entity("You cannot access this resource").build());
-                    return;
                 }
             }
         }
@@ -110,6 +109,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         UserRepository userRepository = new UserRepository();
         User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+
+        //TODO: uncomment on production
+        /*if (!user.isActive()) {
+            return false;
+        }*/
 
         if (rolesSet.contains(user.getRole().getDescription())){
             isAllowed = true;
