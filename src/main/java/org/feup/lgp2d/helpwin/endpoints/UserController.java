@@ -105,7 +105,7 @@ public class UserController {
         if (userToRetrieve == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
         }
-
+        
         if (!userToRetrieve.isActive()) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Account deactivated").build();
         }
