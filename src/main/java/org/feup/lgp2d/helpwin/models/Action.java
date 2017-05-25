@@ -139,6 +139,7 @@ public class Action {
         return endDate;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }
@@ -147,6 +148,7 @@ public class Action {
         return user;
     }
 
+    @JsonProperty("verified")
     public boolean isVerified() {
         return verified;
     }
