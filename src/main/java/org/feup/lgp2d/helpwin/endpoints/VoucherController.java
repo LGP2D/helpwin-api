@@ -92,6 +92,7 @@ public class VoucherController {
     @PermitAll
     @PUT
     @Path("/validate")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response validateVoucher(@HeaderParam(value = "Authorization") final String token, Voucher voucher){
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
@@ -110,6 +111,7 @@ public class VoucherController {
     @PermitAll
     @PUT
     @Path("/invalidate")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response invalidateVoucher(@HeaderParam(value = "Authorization") final String token, Voucher voucher){
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build(); }
