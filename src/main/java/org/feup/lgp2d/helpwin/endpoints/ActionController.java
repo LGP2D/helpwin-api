@@ -141,6 +141,7 @@ public class ActionController {
     @Path("/userProfiles")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(Action action) {
+        try{
         List<User> usersInformation = new ArrayList<>();
         ActionRepository actionRepository = new ActionRepository();
 
@@ -152,13 +153,9 @@ public class ActionController {
                 break;
             }
         }
-        List<UserAction> userActionList;
-        try{
-            userActionList = actionR != null ? actionR.getUserActions() : null;
 
-        } catch (NullPointerException ex){
-            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
-        }
+        List<UserAction> userActionList;
+        userActionList = actionR != null ? actionR.getUserActions() : null;
 
         assert userActionList != null;
         for (UserAction userAction : userActionList) {
@@ -169,6 +166,9 @@ public class ActionController {
         if (!usersInformation.isEmpty()) {
             return Response.ok().entity(usersInformation).build();
         } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+        }
+        } catch (NullPointerException ex){
             return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
         }
     }
