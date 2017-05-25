@@ -12,10 +12,11 @@ public class CORSRequest implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+
         if (requestContext.getRequest().getMethod().equalsIgnoreCase("OPTIONS")){
             log.info("HTTP Method (OPTIONS) - Detected!");
 
-            requestContext.abortWith(Response.status(Response.Status.OK).build());
+            requestContext.abortWith(Response.status(Response.Status.OK).entity("OPTIONS OK!").build());
         }
     }
 }

@@ -140,6 +140,8 @@ public class User {
     public int getCredits() {
         return credits;
     }
+
+    @JsonProperty("active")
     public boolean isActive() {
         return active;
     }
