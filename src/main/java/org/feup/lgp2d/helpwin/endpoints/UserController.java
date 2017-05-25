@@ -42,6 +42,19 @@ public class UserController {
         return Response.ok(institutions).build();
     }
 
+    @GET
+    @Path("/companies")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCompanies() {
+        UserRepository userRepository = new UserRepository();
+        List<User> companies = userRepository.getAll();
+        companies = companies.stream().filter(p -> p.getRole().getId() == 4).collect(Collectors.toList());
+
+        if (companies == null) { return Response.status(Response.Status.NO_CONTENT).entity("No companies to show").build(); }
+        return Response.ok(companies).build();
+    }
+
     /**
      * Create a user into the database
      *
