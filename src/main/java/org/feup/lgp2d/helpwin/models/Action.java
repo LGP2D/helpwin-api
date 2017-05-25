@@ -179,4 +179,8 @@ public class Action {
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
+
+    public void setUserActions(List<UserAction> userActions) {
+        this.userActions = userActions;
+    }
 }

@@ -1,10 +1,10 @@
 package org.feup.lgp2d.helpwin.endpoints;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
+import org.feup.lgp2d.helpwin.dao.repositories.Repository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
-import org.feup.lgp2d.helpwin.models.Coins;
-import org.feup.lgp2d.helpwin.models.RootImage;
-import org.feup.lgp2d.helpwin.models.User;
+import org.feup.lgp2d.helpwin.models.*;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -14,10 +14,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("user")
@@ -301,5 +298,30 @@ public class UserController {
         userRepository.updateUser(userToActivate);
 
         return Response.ok("User successfully activated").build();
+    }
+
+    @GET
+    @PermitAll
+    @Path("/volunteerActions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVolunteerActions(@HeaderParam(value = "Authorization") final String token) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+        String email = TokenHelper.getEmail(token);
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getUserByEmail(email);
+
+        if (user == null) { return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build(); }
+
+        List<UserAction> userActions = user.getUserActions();
+        userActions.forEach(p -> p.setUser(null));
+        userActions.forEach(p -> p.getAction().setUser(null));
+        userActions.forEach(p -> p.getAction().setUserActions(null));
+
+        List<UserAction> actions = new ArrayList<>();
+        actions.addAll(userActions);
+
+        return Response.ok(actions).build();
     }
 }
