@@ -113,6 +113,7 @@ public class Voucher {
 
     public String getCompany() { return company; }
 
+    @JsonProperty("valid")
     public boolean isValid() {
         return valid;
     }
