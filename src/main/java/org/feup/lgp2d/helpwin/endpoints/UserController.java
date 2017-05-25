@@ -93,6 +93,10 @@ public class UserController {
             return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
         }
 
+        if (!userToRetrieve.isActive()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Account deactivated").build();
+        }
+
         if (userToRetrieve.getPassword() != null) {
             userToRetrieve.setPassword(null);
         }
