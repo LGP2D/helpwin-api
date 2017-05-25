@@ -221,6 +221,8 @@ public class UserController {
 
             //TODO: Verify email using token
 
+            user.setActive(true);
+
             repo.updateUser(user);
             User newUser = repo.getUserByUniqueID(user.getUniqueId());
             return Response.ok(newUser).build();
