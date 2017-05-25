@@ -168,7 +168,8 @@ public class UserController {
 
         String base64 = file.file.data_uri.split(",")[1];
         byte[] decodedImage = Base64.getDecoder().decode(base64.getBytes(StandardCharsets.UTF_8));
-        java.nio.file.Path path = Paths.get("./images/", file.file.filename.substring(0, 9) + ".png");
+        java.nio.file.Path path = Paths.get("./images/", file.file.filename.length() > 10 ?
+                file.file.filename.substring(0, 9) + ".png" : file.file.filename);
         try {
             String pathToReturn = Files.write(path, decodedImage).toString();
             return Response.ok(pathToReturn.substring(1)).build();
