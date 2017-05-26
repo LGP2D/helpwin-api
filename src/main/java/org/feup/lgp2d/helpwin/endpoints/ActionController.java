@@ -4,6 +4,7 @@ import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
+import org.feup.lgp2d.helpwin.models.EvaluationStatus;
 import org.feup.lgp2d.helpwin.models.User;
 import org.feup.lgp2d.helpwin.models.UserAction;
 
@@ -254,5 +255,37 @@ public class ActionController {
         actionRepository.update(actionToInvalidate);
 
         return Response.ok("Action successfully invalidated").build();
+    }
+
+    @PermitAll
+    @PUT
+    @Path("/acceptUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response acceptUser(@HeaderParam(value = "Authorization")final String token, Action action) {
+        if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+        UserRepository userRepository = new UserRepository();
+        User user = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
+        if (user == null) { return Response.status(Response.Status.NO_CONTENT).entity("User not found").build(); }
+
+
+        ActionRepository actionRepository = new ActionRepository();
+        Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+        if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+
+        UserAction userAction = null;
+        for ( UserAction ua : user.getUserActions() ) {
+            if(ua.getAction().getUniqueId().equals(action.getUniqueId())){
+                userAction = ua;
+                break;
+            }
+        }
+
+        if(userAction != null){
+            return Response.ok("Action successfully invalidated").build();
+        }else{
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting.").build();
+        }
     }
 }
