@@ -167,7 +167,8 @@ public class ActionController {
 
         assert userActionList != null;
         for (UserAction userAction : userActionList) {
-            usersInformation.add(userAction.getUser());
+            if (!userAction.isElected() && userAction.getEvaluationStatus().getId() != 4)
+                usersInformation.add(userAction.getUser());
         }
 
         cleanFileds(usersInformation);
@@ -274,8 +275,8 @@ public class ActionController {
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
         UserRepository userRepository = new UserRepository();
-        User intitution = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
-        if (intitution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
+        User institution = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
+        if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
         ActionRepository actionRepository = new ActionRepository();
         Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
@@ -316,8 +317,8 @@ public class ActionController {
             if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
             UserRepository userRepository = new UserRepository();
-            User intitution = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
-            if (intitution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
+            User institution = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
+            if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
             ActionRepository actionRepository = new ActionRepository();
             Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
@@ -337,12 +338,19 @@ public class ActionController {
 
             UserActionRepository userActionRepository = new UserActionRepository();
             userAction.setElected(false);
+
+            EvaluationStatusRepository evaluationStatusRepository = new EvaluationStatusRepository();
+            EvaluationStatus eval = evaluationStatusRepository.getOne(p -> p.getDescription().equalsIgnoreCase("rejected"));
+
+            if (eval == null) { return Response.status(Response.Status.NO_CONTENT).entity("eval not found").build(); }
+
+            userAction.setEvaluationStatus(eval);
             userActionRepository.update(userAction);
 
-            return Response.ok("User accepted").build();
+            return Response.ok("User rejected").build();
 
         }catch(Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting user.").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error rejecting user.").build();
         }
 
     }
