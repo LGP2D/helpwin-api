@@ -2,6 +2,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.EvaluationStatusRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
 import org.feup.lgp2d.helpwin.models.EvaluationStatus;
@@ -121,6 +122,11 @@ public class ActionController {
         userAction.setUser(user);
         userAction.setAction(action);
 
+        EvaluationStatusRepository evaluationStatusRepository = new EvaluationStatusRepository();
+        EvaluationStatus eval = evaluationStatusRepository.getOne(p -> p.getDescription()
+                .equalsIgnoreCase(userAction.getEvaluationStatus().getDescription()));
+
+        userAction.setEvaluationStatus(eval);
         user.getUserActions().add(userAction);
         userRepository.updateUser(user);
         return Response.ok("Action added to User action.").build();
