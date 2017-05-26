@@ -336,7 +336,7 @@ public class UserController {
 
         List<UserAction> userActions = user.getUserActions();
         userActions.forEach(p -> p.setUser(null));
-        userActions.forEach(p -> p.getAction().setUser(null));
+        //userActions.forEach(p -> p.getAction().setUser(null));
         userActions.forEach(p -> p.getAction().setUserActions(null));
 
         List<UserAction> actions = new ArrayList<>();
