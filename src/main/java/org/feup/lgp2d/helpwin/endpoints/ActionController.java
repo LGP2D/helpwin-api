@@ -279,8 +279,8 @@ public class ActionController {
 
 
         ActionRepository actionRepository = new ActionRepository();
-        Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
-        if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+        Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+        if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
         UserAction userAction = null;
         for ( UserAction ua : user.getUserActions() ) {
@@ -295,6 +295,9 @@ public class ActionController {
         UserActionRepository userActionRepository = new UserActionRepository();
         userAction.setElected(true);
         userActionRepository.update(userAction);
+
+        action1.setAvailablePosition(action1.getAvailablePosition()-1);
+        actionRepository.update(action1);
         return Response.ok("User accepted").build();
 
         }catch(Exception e){
@@ -317,8 +320,8 @@ public class ActionController {
 
 
             ActionRepository actionRepository = new ActionRepository();
-            Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
-            if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+            Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+            if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
             UserAction userAction = null;
             for ( UserAction ua : user.getUserActions() ) {
@@ -333,10 +336,14 @@ public class ActionController {
             UserActionRepository userActionRepository = new UserActionRepository();
             userAction.setElected(false);
             userActionRepository.update(userAction);
-            return Response.ok("User declined").build();
+
+            action1.setAvailablePosition(action1.getAvailablePosition()-1);
+            actionRepository.update(action1);
+            return Response.ok("User accepted").build();
 
         }catch(Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting user").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting user.").build();
         }
+
     }
 }

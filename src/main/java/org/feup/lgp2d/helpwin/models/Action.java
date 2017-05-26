@@ -183,4 +183,8 @@ public class Action {
     public void setUserActions(List<UserAction> userActions) {
         this.userActions = userActions;
     }
+
+    public void setAvailablePosition(int availablePosition) {
+        this.availablePosition = availablePosition;
+    }
 }
