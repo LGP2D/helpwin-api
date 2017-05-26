@@ -3,10 +3,14 @@ package org.feup.lgp2d.helpwin.endpoints;
 import com.sun.org.apache.regexp.internal.RE;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.Repository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.EvaluationStatusRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.*;
 
 import javax.annotation.security.PermitAll;
+import javax.persistence.PostRemove;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -343,5 +347,62 @@ public class UserController {
         actions.addAll(userActions);
 
         return Response.ok(actions).build();
+    }
+
+    @POST
+    @PermitAll
+    @Path("/evaluate/{actionUniqueId}/{status}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response evaluateVolunteer(@HeaderParam(value = "Authorization")final String token, User volunteer,
+                                      @PathParam("actionUniqueId") final String actionUniqueId,
+                                      @PathParam("status") final String status) {
+
+        try {
+            if (!TokenHelper.isValid(token)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid Token").build();
+            }
+
+            String email = TokenHelper.getEmail(token);
+
+            UserRepository userRepository = new UserRepository();
+            User institution = userRepository.getUserByEmail(email);
+
+            if (institution == null) {
+                return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build();
+            }
+
+            List<UserAction> actions = institution.getUserActions();
+            UserAction actionToEvaluate = actions.stream().filter(p -> p.getPk().getUser().getUniqueId().contentEquals(volunteer.getUniqueId()) && p.getAction().getUniqueId().contentEquals(actionUniqueId)).findFirst().orElse(null);
+
+            if (actionToEvaluate == null) {
+                return Response.status(Response.Status.NO_CONTENT).entity("No action to eval").build();
+            }
+
+            EvaluationStatusRepository evaluationStatusRepository = new EvaluationStatusRepository();
+            EvaluationStatus eval;
+
+            if (status == null || status.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("status empty").build();
+            }
+
+            if (status.equalsIgnoreCase("success")) {
+                eval = evaluationStatusRepository.getOne(p -> p.getDescription().equalsIgnoreCase("success"));
+            } else {
+                eval = evaluationStatusRepository.getOne(p -> p.getDescription().equalsIgnoreCase("failed"));
+            }
+
+            if (eval == null) {
+                return Response.status(Response.Status.NO_CONTENT).entity("no eval found").build();
+            }
+
+            actionToEvaluate.setEvaluationStatus(eval);
+
+            UserActionRepository userActionRepository = new UserActionRepository();
+            userActionRepository.update(actionToEvaluate);
+            return Response.ok().build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
     }
 }
