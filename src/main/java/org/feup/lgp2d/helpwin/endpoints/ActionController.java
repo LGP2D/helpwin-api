@@ -269,7 +269,7 @@ public class ActionController {
     @Path("/acceptUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response acceptUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")int id) {
+    public Response acceptUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")String id) {
         try{
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
@@ -311,7 +311,7 @@ public class ActionController {
     @Path("/declineUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response declineUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")int id) {
+    public Response declineUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")String id) {
         try{
             if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
