@@ -3,6 +3,7 @@ package org.feup.lgp2d.helpwin.endpoints;
 import org.feup.lgp2d.helpwin.authentication.util.TokenHelper;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.ActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.EvaluationStatusRepository;
+import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserActionRepository;
 import org.feup.lgp2d.helpwin.dao.repositories.repositoryImplementations.UserRepository;
 import org.feup.lgp2d.helpwin.models.Action;
 import org.feup.lgp2d.helpwin.models.EvaluationStatus;
@@ -264,11 +265,12 @@ public class ActionController {
     }
 
     @PermitAll
-    @PUT
+    @POST
     @Path("/acceptUser")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response acceptUser(@HeaderParam(value = "Authorization")final String token, Action action) {
+        try{
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
         UserRepository userRepository = new UserRepository();
@@ -288,10 +290,53 @@ public class ActionController {
             }
         }
 
-        if(userAction != null){
-            return Response.ok("Action successfully invalidated").build();
-        }else{
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting.").build();
+        if (userAction == null) { return Response.status(Response.Status.NO_CONTENT).entity("User action not found").build(); }
+
+        UserActionRepository userActionRepository = new UserActionRepository();
+        userAction.setElected(true);
+        userActionRepository.update(userAction);
+        return Response.ok("User accepted").build();
+
+        }catch(Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting user.").build();
+        }
+    }
+
+    @PermitAll
+    @POST
+    @Path("/declineUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response declineUser(@HeaderParam(value = "Authorization")final String token, Action action) {
+        try{
+            if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+            UserRepository userRepository = new UserRepository();
+            User user = userRepository.getOne(p -> p.getEmail().equals(TokenHelper.getEmail(token)));
+            if (user == null) { return Response.status(Response.Status.NO_CONTENT).entity("User not found").build(); }
+
+
+            ActionRepository actionRepository = new ActionRepository();
+            Action actionToInvalidate = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+            if (actionToInvalidate == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
+
+            UserAction userAction = null;
+            for ( UserAction ua : user.getUserActions() ) {
+                if(ua.getAction().getUniqueId().equals(action.getUniqueId())){
+                    userAction = ua;
+                    break;
+                }
+            }
+
+            if (userAction == null) { return Response.status(Response.Status.NO_CONTENT).entity("User action not found").build(); }
+
+            UserActionRepository userActionRepository = new UserActionRepository();
+            userAction.setElected(false);
+            userActionRepository.update(userAction);
+            return Response.ok("User declined").build();
+
+        }catch(Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error accepting user").build();
         }
     }
 }
