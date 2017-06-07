@@ -31,9 +31,9 @@ public class VoucherController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVouchers() {
         VoucherRepository voucherRepository = new VoucherRepository();
-        List<Voucher> vouchers = voucherRepository.getAll();
-        //List<Voucher> vouchers = new ArrayList<>(0);
-        //vouchers = vouchersR.stream().filter(p -> p.getQuantity().equals(0)).collect(Collectors.toList());
+        List<Voucher> vouchersR = voucherRepository.getAll();
+        List<Voucher> vouchers = new ArrayList<>(0);
+        vouchers = vouchersR.stream().filter(p -> p.getQuantity() > 0).collect(Collectors.toList());
         if (!vouchers.isEmpty()) {
             return Response.ok().entity(vouchers).build();
         } else {
