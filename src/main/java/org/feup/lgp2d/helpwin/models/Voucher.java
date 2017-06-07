@@ -51,10 +51,13 @@ public class Voucher {
     @OneToOne(cascade = CascadeType.REFRESH)
     private User company;
 
+    @Column(nullable = false)
+    private Integer quantity;
+
     public Voucher() {}
 
     public Voucher(String uniqueId, String type, String description, String imagePath, Date startDate, Date endDate,
-                   Integer credits, boolean valid, User company) {
+                   Integer credits, boolean valid, User company, Integer quantity) {
         this.uniqueId = uniqueId;
         this.type = type;
         this.description = description;
@@ -64,6 +67,7 @@ public class Voucher {
         this.credits = credits;
         this.valid = valid;
         this.company = company;
+        this.quantity = quantity;
     }
 
     /**
@@ -108,14 +112,20 @@ public class Voucher {
         return valid;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
     /**
      *  Utils
      */
     public void generateUniqueId(){this.uniqueId= UUID.randomUUID().toString();}
+
     @JsonProperty("uniqueId")
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
+
     public void setValid(boolean valid) {
         this.valid = valid;
     }
