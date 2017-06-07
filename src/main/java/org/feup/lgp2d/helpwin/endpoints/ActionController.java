@@ -354,4 +354,33 @@ public class ActionController {
         }
 
     }
+
+    @PermitAll
+    @POST
+    @Path("/acceptedUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAcceptedUsers(@HeaderParam(value = "Authorization")final String token, Action action) {
+        try{
+            if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+            ActionRepository actionRepository = new ActionRepository();
+
+            List<UserAction> usersActions = actionRepository.getOne(p-> p.getUniqueId().equals(action.getUniqueId())).getUserActions();
+
+            List<User> users = new ArrayList<>(0);
+            for (UserAction userAction : usersActions) {
+                if(userAction.isElected()){
+                    users.add(userAction.getUser());
+                }
+            }
+
+            if(users.size() > 0){
+                return Response.ok("User rejected").build();
+            }else{
+                return Response.noContent().build();
+            }
+        }catch(Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal error.").build();
+        }
+    }
 }
