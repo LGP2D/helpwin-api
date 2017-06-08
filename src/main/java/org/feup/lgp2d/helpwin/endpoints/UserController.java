@@ -351,11 +351,11 @@ public class UserController {
 
     @POST
     @PermitAll
-    @Path("/evaluate/{actionUniqueId}/{status}")
+    @Path("/evaluate/{actionId}/{status}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response evaluateVolunteer(@HeaderParam(value = "Authorization")final String token, User volunteer,
-                                      @PathParam("actionUniqueId") final String actionUniqueId,
+                                      @PathParam("actionId") final int actionId,
                                       @PathParam("status") final String status) {
 
         try {
@@ -373,7 +373,7 @@ public class UserController {
             }
 
             List<UserAction> actions = institution.getUserActions();
-            UserAction actionToEvaluate = actions.stream().filter(p -> p.getPk().getUser().getUniqueId().contentEquals(volunteer.getUniqueId()) && p.getAction().getUniqueId().contentEquals(actionUniqueId)).findFirst().orElse(null);
+            UserAction actionToEvaluate = actions.stream().filter(p -> p.getPk().getUser().getUniqueId().contentEquals(volunteer.getUniqueId()) && p.getAction().getId().equals(actionId)).findFirst().orElse(null);
 
             if (actionToEvaluate == null) {
                 return Response.status(Response.Status.NO_CONTENT).entity("No action to eval").build();

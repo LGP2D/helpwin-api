@@ -357,15 +357,15 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("/acceptedUsers")
+    @Path("/acceptedUsers/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAcceptedUsers(@HeaderParam(value = "Authorization")final String token, Action action) {
+    public Response getAcceptedUsers(@HeaderParam(value = "Authorization")final String token, @PathParam("id") int actionId) {
         try{
             if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
             ActionRepository actionRepository = new ActionRepository();
 
-            List<UserAction> usersActions = actionRepository.getOne(p-> p.getUniqueId().equals(action.getUniqueId())).getUserActions();
+            List<UserAction> usersActions = actionRepository.getOne(p-> p.getId().equals(actionId)).getUserActions();
 
             List<User> users = new ArrayList<>(0);
             for (UserAction userAction : usersActions) {
