@@ -400,6 +400,12 @@ public class UserController {
 
             UserActionRepository userActionRepository = new UserActionRepository();
             userActionRepository.update(actionToEvaluate);
+
+            User volunteerR = userRepository.getOne( p-> p.getUniqueId().equals(volunteer.getUniqueId()) );
+
+            volunteerR.setCredits(volunteerR.getCredits() + actionToEvaluate.getAction().getCredits());
+
+            userRepository.update(volunteerR);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
