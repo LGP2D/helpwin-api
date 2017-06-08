@@ -171,7 +171,7 @@ public class ActionController {
                 usersInformation.add(userAction.getUser());
         }
 
-        cleanFileds(usersInformation);
+        cleanFields(usersInformation);
         if (!usersInformation.isEmpty()) {
             return Response.ok().entity(usersInformation).build();
         } else {
@@ -182,7 +182,7 @@ public class ActionController {
         }
     }
 
-    private void cleanFileds(List<User> users){
+    private void cleanFields(List<User> users){
         for (User u : users) {
             u.setToken("");
             u.setPassword("");
