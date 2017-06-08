@@ -176,6 +176,11 @@ public class Action {
     /**
      * Setters
      */
+    @JsonProperty("id")
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public void setVerified(boolean verified) {
         this.verified = verified;
     }

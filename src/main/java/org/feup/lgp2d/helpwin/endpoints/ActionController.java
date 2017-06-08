@@ -146,9 +146,9 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("/userProfiles")
+    @Path("/userProfiles/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers(Action action) {
+    public Response getUsers(@PathParam("id") int id) {
         try{
         List<User> usersInformation = new ArrayList<>();
         ActionRepository actionRepository = new ActionRepository();
@@ -156,7 +156,7 @@ public class ActionController {
         List<Action> actions = actionRepository.getAll();
         Action actionR = null;
         for (Action a : actions) {
-            if(a.getId().equals(action.getId())){
+            if(a.getId().equals(id)){
                 actionR = a;
                 break;
             }
