@@ -133,4 +133,8 @@ public class Voucher {
     public void setCompany(User company) {
         this.company = company;
     }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

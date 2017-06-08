@@ -174,4 +174,41 @@ public class VoucherController {
         }
     }
 
+    @PermitAll
+    @POST
+    @Path("/exchangeVoucher")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response exchangeVoucher(@HeaderParam("Authorization")String token, Voucher voucher) {
+        try{
+            if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
+
+            VoucherRepository voucherRepository = new VoucherRepository();
+            UserRepository userRepository = new UserRepository();
+
+            Voucher voucherR = voucherRepository.getOne( p -> p.getUniqueId().equals(voucher.getUniqueId()));
+            if(voucherR == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("Voucher not found.").build();
+            }
+
+            User user = userRepository.getOne( p-> p.getEmail().equals(TokenHelper.getEmail(token)) );
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User not found.").build();
+            }
+
+            if(user.getCredits() >= voucherR.getCredits() && voucherR.getQuantity() > 0){
+                user.setCredits(user.getCredits() - voucherR.getCredits());
+                voucherR.setQuantity(voucherR.getQuantity() - 1);
+            }else{
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Quantity of the voucher is 0 or the user does not have enough credits.").build();
+            }
+
+            userRepository.update(user);
+            voucherRepository.update(voucherR);
+            return Response.status(Response.Status.OK).entity("Voucher exchanged.").build();
+
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
