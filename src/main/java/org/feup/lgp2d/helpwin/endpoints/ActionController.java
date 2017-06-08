@@ -267,10 +267,10 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("/acceptUser/{id}")
+    @Path("/acceptUser/{actionId}/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response acceptUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")String id) {
+    public Response acceptUser(@HeaderParam(value = "Authorization")final String token, @PathParam("actionId")int actionId, @PathParam("userId")String id) {
         try{
         if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
@@ -279,7 +279,7 @@ public class ActionController {
         if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
         ActionRepository actionRepository = new ActionRepository();
-        Action action1 = actionRepository.getOne(p -> p.getId().equals(action.getId()));
+        Action action1 = actionRepository.getOne(p -> p.getId().equals(actionId));
         if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
         UserAction userAction = null;
@@ -309,10 +309,10 @@ public class ActionController {
 
     @PermitAll
     @POST
-    @Path("/declineUser/{id}")
+    @Path("/declineUser/{actionId}/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response declineUser(@HeaderParam(value = "Authorization")final String token, Action action, @PathParam("id")String id) {
+    public Response declineUser(@HeaderParam(value = "Authorization")final String token, @PathParam("actionId")int actionId, @PathParam("userId")String id) {
         try{
             if (!TokenHelper.isValid(token)) { return Response.status(Response.Status.BAD_REQUEST).entity("Invalid token").build(); }
 
@@ -321,7 +321,7 @@ public class ActionController {
             if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
             ActionRepository actionRepository = new ActionRepository();
-            Action action1 = actionRepository.getOne(p -> p.getId().equals(action.getId()));
+            Action action1 = actionRepository.getOne(p -> p.getId().equals(actionId));
             if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
             UserAction userAction = null;
