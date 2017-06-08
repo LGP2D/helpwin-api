@@ -143,23 +143,28 @@ public class ActionController {
         List<Action> actions = actionRepository.getAll();
         Action actionR = null;
         for (Action a : actions) {
-            if(a.getUniqueId().equals(action.getUniqueId())){
+            if(a.getId().equals(action.getId())){
                 actionR = a;
                 break;
             }
         }
 
-        List<UserAction> userActionList = actionR.getUserActions();
+        if(actionR != null) {
+            List<UserAction> userActionList = actionR.getUserActions();
 
-        for (UserAction userAction : userActionList) {
-            usersInformation.add(userAction.getUser());
+            for (UserAction userAction : userActionList) {
+                usersInformation.add(userAction.getUser());
+            }
+
+            cleanFileds(usersInformation);
+            if (!usersInformation.isEmpty()) {
+                return Response.ok().entity(usersInformation).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+            }
         }
-
-        cleanFileds(usersInformation);
-        if (!usersInformation.isEmpty()) {
-            return Response.ok().entity(usersInformation).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Action has no users.").build();
+        else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Action not found.").build();
         }
     }
 
@@ -172,7 +177,7 @@ public class ActionController {
     }
 
     @PermitAll
-    @POST
+    @GET
     @Path("/institutionActions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
