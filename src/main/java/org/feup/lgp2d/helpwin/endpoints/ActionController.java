@@ -279,7 +279,7 @@ public class ActionController {
         if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
         ActionRepository actionRepository = new ActionRepository();
-        Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+        Action action1 = actionRepository.getOne(p -> p.getId().equals(action.getId()));
         if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
         UserAction userAction = null;
@@ -321,7 +321,7 @@ public class ActionController {
             if (institution == null) { return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build(); }
 
             ActionRepository actionRepository = new ActionRepository();
-            Action action1 = actionRepository.getOne(p -> p.getUniqueId().contentEquals(action.getUniqueId()));
+            Action action1 = actionRepository.getOne(p -> p.getId().equals(action.getId()));
             if (action1 == null) { return Response.status(Response.Status.NO_CONTENT).entity("Action not found").build(); }
 
             UserAction userAction = null;
