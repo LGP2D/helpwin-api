@@ -26,11 +26,6 @@ import java.util.*;
 public class AuthenticationFilter implements ContainerRequestFilter {
 
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
-    private static final String AUTHENTICATION_SCHEME = "Basic";
-    private static final Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED)
-            .entity("You cannot access this resource").build();
-    private static final Response ACCESS_FORBIDDEN = Response.status(Response.Status.UNAUTHORIZED)
-            .entity("Access blocked for all users").build();
     @Context
     private ResourceInfo resourceInfo;
 
@@ -49,7 +44,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
              * Case DenyAll annotation is present
              */
             if (method.isAnnotationPresent(DenyAll.class)) {
-                containerRequestContext.abortWith(ACCESS_FORBIDDEN);
+                containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("Access blocked for all users").build());
                 return;
             }
 
@@ -64,7 +60,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
              * If no authorization is present block access
              */
             if (authorization == null || authorization.isEmpty()) {
-                containerRequestContext.abortWith(ACCESS_DENIED);
+                containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("You cannot access this resource").build());
                 return;
             }
             /**
@@ -100,8 +97,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                  * Case user is not valid
                  */
                 if (!isUserAllowed(email, rolesSet)) {
-                    containerRequestContext.abortWith(ACCESS_DENIED);
-                    return;
+                    containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("You cannot access this resource").build());
                 }
             }
         }
@@ -112,6 +109,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         UserRepository userRepository = new UserRepository();
         User user = userRepository.getOne(p -> p.getEmail().contentEquals(email));
+
+        //TODO: uncomment on production
+        /*if (!user.isActive()) {
+            return false;
+        }*/
 
         if (rolesSet.contains(user.getRole().getDescription())){
             isAllowed = true;

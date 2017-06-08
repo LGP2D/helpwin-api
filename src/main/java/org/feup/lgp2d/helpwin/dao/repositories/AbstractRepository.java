@@ -153,4 +153,21 @@ public abstract class AbstractRepository<T> implements Repository<T> {
                 .findAny()
                 .orElse(null);
     }
+
+    public void update(T entity) {
+        Assert.notNull(entity);
+
+        Session session = openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            session.update(entity);
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+        } finally {
+            session.close();
+        }
+    }
 }

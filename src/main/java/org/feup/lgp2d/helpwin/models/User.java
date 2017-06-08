@@ -63,6 +63,10 @@ public class User {
     @JsonIgnore
     private Integer credits = 0;
 
+    @Column
+    @JsonIgnore
+    private boolean active = false;
+
     /**
      * Constructors
      */
@@ -123,6 +127,7 @@ public class User {
     public Role getRole() {
         return role;
     }
+
     @JsonProperty("token")
     public String getToken() {
         return token;
@@ -130,9 +135,15 @@ public class User {
     public List<UserAction> getUserActions() {
         return userActions;
     }
+
     @JsonProperty("credits")
     public int getCredits() {
         return credits;
+    }
+
+    @JsonProperty("active")
+    public boolean isActive() {
+        return active;
     }
 
     /**
@@ -172,5 +183,8 @@ public class User {
     }
     public void setCredits(Integer credits) {
         this.credits = credits;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
