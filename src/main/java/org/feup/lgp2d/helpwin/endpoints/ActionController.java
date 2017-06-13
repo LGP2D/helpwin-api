@@ -375,7 +375,7 @@ public class ActionController {
             }
 
             if(users.size() > 0){
-                return Response.ok("User rejected").build();
+                return Response.ok(users).build();
             }else{
                 return Response.noContent().build();
             }

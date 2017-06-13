@@ -372,8 +372,10 @@ public class UserController {
                 return Response.status(Response.Status.NO_CONTENT).entity("Institution not found").build();
             }
 
-            List<UserAction> actions = institution.getUserActions();
-            UserAction actionToEvaluate = actions.stream().filter(p -> p.getPk().getUser().getUniqueId().contentEquals(volunteer.getUniqueId()) && p.getAction().getId().equals(actionId)).findFirst().orElse(null);
+            User teste = userRepository.getUserByUniqueID(volunteer.getUniqueId());
+            List<UserAction> yolo = teste.getUserActions();
+
+            UserAction actionToEvaluate = yolo.stream().filter(p -> p.getPk().getUser().getUniqueId().contentEquals(volunteer.getUniqueId()) && p.getAction().getId().equals(actionId)).findFirst().orElse(null);
 
             if (actionToEvaluate == null) {
                 return Response.status(Response.Status.NO_CONTENT).entity("No action to eval").build();
